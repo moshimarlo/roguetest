@@ -1,9 +1,5 @@
 #include "rng.h"
 #include "pcg_basic.h"
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include <time.h>
 #include <stdio.h>
 

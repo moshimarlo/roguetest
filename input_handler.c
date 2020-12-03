@@ -1,6 +1,6 @@
 #include "input_handler.h"
-#include <ncurses.h>
 #include "player.h"
+#include <ncurses.h>
 
 
 int handleInput(Player* player){
