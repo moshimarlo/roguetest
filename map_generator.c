@@ -5,59 +5,57 @@
 #include <string.h>
 #include "symbols.h"
 
+//Fill the map with walls, to be tunneled by randomizeMap
 void initMap(int **map, int maxRow, int maxCol) {
-    //int **temp_arr;
-    //temp_arr = malloc(sizeof(int *) * maxRow); 
-    //for (int i = 0; i < maxRow; i++) {
-    //    temp_arr[i] = (int*)malloc(sizeof(int *) * maxCol);
-    //    for (int j = 0; j < maxCol; j++) {
-    //        temp_arr[i][j] = 1;
-    //    }
-    //}
-    //map = temp_arr;
-    //freeMap(temp_arr, maxRow);
     for (int i = 0; i < maxRow; i++) {
         for (int j = 0; j < maxCol; j++) {
-            *(*(map+i) + j) = 0;
+            *(*(map+i) + j) = NWALL;
         }
     }
 }
 
 void randomizeMap(int **map, int maxRow, int maxCol) {
-    for (int i = 0; i < maxRow; i++) {
-        for (int j = 0; j < maxCol; j++) {
-            *(*(map+i) + j) = getRand(0, 3);
-        }
+    int maxRooms = 30;
+    for (int i = 0; i < maxRooms; i++) {
+        createRoom(map, maxRow, maxCol); 
     }
-    //int roomWidth, roomHeight;
-    //int sectionWidth = maxRow/6;
-    //int sectionHeight = maxCol/6;
-    ////Iterate through each section of the map (6 by 6)
-    ////and make a random room
-    //for (int i = 0; i < sectionWidth*6; i += sectionWidth) {
-    //    for (int j = 0; j < sectionHeight*6; j += sectionHeight) {
-    //        createRoom(map, i, j, i + sectionWidth, j + sectionHeight);    
-
-    //    }
-    //}
 }
 
-void createRoom(int **map, int sectMinX, int sectMinY, int sectMaxX, int sectMaxY) {
+void createRoom(int **map, int maxRow, int maxCol) {
     int i, j;
-    int roomWidth = getRand((sectMinX),sectMaxX);
-    int roomHeight = getRand((sectMinY),sectMaxY);
-    int roomZeroX = sectMaxX - roomWidth;
-    int roomZeroY = sectMaxY - roomHeight;
-    int **newRoom = malloc(sizeof(*newRoom)*roomWidth);
-    for (i = 0; i < roomWidth; i++) {
-        newRoom[i] = malloc(sizeof(newRoom[i])*roomHeight);
+    int minWidth = 5;
+    int minHeight = 3;
+    int maxHeight = 6; 
+    int maxWidth = 12;
+    int roomWidth = getRand(minWidth,maxWidth);
+    int roomHeight = getRand(minHeight,maxHeight);
+    int x1 = getRand(1, maxRow-1);
+    int y1 = getRand(1, maxCol-1);
+    int x2 = x1 + roomHeight;
+    int y2 = y1 + roomWidth;
+    bool unoccupied = true; 
+    
+    //Check if the room's maximum x and y coordinates would go out of bounds
+    while (x2 > maxRow || y2 > maxCol) {
+        x1 = getRand(1, maxCol-1);
+        y1 = getRand(1, maxRow-1);
+        x2 = x1 + roomHeight;
+        y2 = y1 + roomWidth;
     }
-    for (i = 0; i < roomHeight; i++) {
-        for (j = 0; j < roomWidth; j++) {
-            if (i == 0) {
-                //*(*(map+(roomZeroX+i)) + (roomZeroY+j)) = 1;
-            } else if (j == 0) {
-                //*(*(map+(roomZeroX+i)) + (roomZeroY+j)) = 1;
+
+    //Check if new room overlaps existing room
+    for (i = x1; i < x2; i++) {
+        for (j = y1; j < y2; j++) {
+            if (*(*(map+i) + j) == NFLOOR) {
+                unoccupied = false;
+            }
+        }
+    }
+
+    if (unoccupied) {
+        for (i = x1; i < x2; i++) {
+            for (j = y1; j < y2; j++) {
+                *(*(map+i) + j) = NFLOOR;
             }
         }
     }
@@ -84,7 +82,6 @@ void drawMap(int **map, int maxRow, int maxCol) {
             mvaddch(i, j, tile);
         }
     }
-    //free(ptr);
 }
 
 void freeMap(int **map, int maxRow) {

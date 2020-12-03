@@ -5,7 +5,7 @@ void initMap(int **map, int maxRow, int maxCol);
 
 void randomizeMap(int **map, int maxRow, int maxCol);
 
-void createRoom(int **map, int sectMinX, int sectMinY,  int sectMaxRow, int sectMaxCol); 
+void createRoom(int **map, int maxRow, int maxCol); 
 
 void drawMap(int **map, int maxRow, int maxCol);
 

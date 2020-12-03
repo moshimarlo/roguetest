@@ -55,6 +55,7 @@ int main(int argc, char *argv[]) {
         inputSig = handleInput(ptr_player);
         
         if (inputSig == 2) {
+            initMap(map, row, col);
             randomizeMap(map, row, col);
         }
         
