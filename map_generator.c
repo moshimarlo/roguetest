@@ -65,6 +65,8 @@ void drawMap(int **map, int maxRow, int maxCol) {
     int tValue;
     char tile;
     int **ptr = &map[0]; 
+    int maxFOV = 10;
+    
     for(int i = 0; i < maxRow; i++){
         for(int j = 0; j < maxCol; j++){
             tValue = map[i][j]; 
