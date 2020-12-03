@@ -61,14 +61,7 @@ int main(int argc, char *argv[]) {
         
         //If player tries to move outside the screen, reset
         //coordinates to stored value
-        if(ptr_player->playerX > row-1 || ptr_player->playerX < 0){
-            ptr_player->playerX = prevX;
-            ptr_player->playerY = prevY;
-        }
-        if(ptr_player->playerY > col-1 || ptr_player->playerY < 0){
-            ptr_player->playerX = prevX;
-            ptr_player->playerY = prevY;
-        }
+        collisionTest(ptr_player, map, row, col, prevX, prevY);
 
         //Clear screen after input
         clear();
@@ -88,3 +81,5 @@ int main(int argc, char *argv[]) {
     endwin();
 
 }
+
+
