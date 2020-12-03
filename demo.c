@@ -19,9 +19,9 @@ int main(int argc, char *argv[]) {
     //Initialise player values
     Player player;
     Player *ptr_player = &player;
-    ptr_player->playerX = 10;
-    ptr_player->playerY = 10;
     
+    initPlayer(ptr_player, 10, 10, 100);
+
     //Input-related variables
     int ch;
     int inputSig = 0;
@@ -59,9 +59,9 @@ int main(int argc, char *argv[]) {
             randomizeMap(map, row, col);
         }
         
-        //If player tries to move outside the screen, reset
+        //If player tries to move outside the screen or into a wall, reset
         //coordinates to stored value
-        collisionTest(ptr_player, map, row, col, prevX, prevY);
+        collisionTest(ptr_player, map, row, col);
 
         //Clear screen after input
         clear();
@@ -79,7 +79,6 @@ int main(int argc, char *argv[]) {
 
     freeMap(map, row);
     endwin();
-
 }
 
 
