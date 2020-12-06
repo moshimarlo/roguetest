@@ -1,9 +1,13 @@
 //CHARACTER SYMBOLS
 #define PLAYER_SYMBOL "@"
-#define KOBOLD "K"
+#define KOBOLD 'K'
+#define ORC 'O'
+#define RAT 'r'
 
 enum monsterType {
-    NKOBOLD
+    NKOBOLD,
+    NORC,
+    NRAT
 };
 
 //MAP SYMBOLS
@@ -17,5 +21,6 @@ enum tile {
     NFLOOR,
     NWALL,
     NDOOR,
-    NSTAIRCASE
+    NSTAIRCASE,
+    NMONSTER
 };

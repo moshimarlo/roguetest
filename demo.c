@@ -6,12 +6,14 @@
 #include "input_handler.h"
 #include "map_generator.h"
 #include "player.h"
+#include "monster.h"
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #define DELAY 20000
-#define MAXMONSTERS 20;
+#define MAXMONSTERS 90;
 
 int main(int argc, char *argv[]) {
     //Initialise randomisation
@@ -20,8 +22,10 @@ int main(int argc, char *argv[]) {
     //Initialise player values
     Player player;
     Player *ptr_player = &player;
-    
     initPlayer(ptr_player, 10, 10, 100);
+
+    //Initialise monsters
+    loadMonsters();
 
     //Input-related variables
     int ch;

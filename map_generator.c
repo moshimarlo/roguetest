@@ -1,9 +1,11 @@
-#include <ncurses.h>
 #include "map_generator.h"
 #include "rng.h"
+#include "symbols.h"
+#include "monster.h"
+
+#include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
-#include "symbols.h"
 
 //Fill the map with walls, to be tunneled by randomizeMap
 void initMap(int **map, int maxRow, int maxCol) {
@@ -27,8 +29,10 @@ void createRoom(int **map, int maxRow, int maxCol) {
     int minHeight = 3;
     int maxHeight = 6; 
     int maxWidth = 12;
-    int roomWidth = getRand(minWidth,maxWidth);
-    int roomHeight = getRand(minHeight,maxHeight);
+    int roomWidth = getRand(minWidth, maxWidth);
+    int roomHeight = getRand(minHeight, maxHeight);
+    int monsterCount = getRand(0, 3);
+    int monX, monY;
     int x1 = getRand(1, maxRow-maxHeight-1);
     int y1 = getRand(1, maxCol-maxWidth-1);
     int x2 = x1 + roomHeight;
@@ -55,9 +59,20 @@ void createRoom(int **map, int maxRow, int maxCol) {
     if (unoccupied) {
         for (i = x1; i < x2; i++) {
             for (j = y1; j < y2; j++) {
-                *(*(map+i) + j) = NFLOOR;
+                if (getRand(0, 100) > 95) {
+                    *(*(map+i) + j) = NMONSTER;
+                    addMonster(i, j, NKOBOLD);
+                } else {
+                    *(*(map+i) + j) = NFLOOR;
+                }
             }
         }
+        //while (monsterCount > 0) {
+        //    monX = getRand(x1, x2-1);
+        //    monY = getRand(y1, y2-1);
+        //    *(*(map+monX) + monY) = NMONSTER;
+        //    monsterCount--;
+        //}
     }
 }
 
@@ -78,6 +93,8 @@ void drawMap(int **map, int maxRow, int maxCol) {
                 tile = DOOR;
             } else if (tValue == NSTAIRCASE) {
                 tile = STAIRCASE;
+            } else if (tValue == NMONSTER) {
+                tile = KOBOLD;
             } else {
                 tile = '?';
             }
