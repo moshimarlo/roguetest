@@ -16,14 +16,16 @@ void initMap(int **map, int maxRow, int maxCol) {
     }
 }
 
-void randomizeMap(int **map, int maxRow, int maxCol) {
+//Called by demo.c
+void randomizeMap(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount) {
     int maxRooms = 30;
     for (int i = 0; i < maxRooms; i++) {
-        createRoom(map, maxRow, maxCol); 
+        createRoom(map, maxRow, maxCol, monsters, monsterCount); 
     }
 }
 
-void createRoom(int **map, int maxRow, int maxCol) {
+//Called by randomizeMap()
+void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount) {
     int i, j;
     int minWidth = 5;
     int minHeight = 3;
@@ -31,7 +33,6 @@ void createRoom(int **map, int maxRow, int maxCol) {
     int maxWidth = 12;
     int roomWidth = getRand(minWidth, maxWidth);
     int roomHeight = getRand(minHeight, maxHeight);
-    int monsterCount = getRand(0, 3);
     int monX, monY;
     int x1 = getRand(1, maxRow-maxHeight-1);
     int y1 = getRand(1, maxCol-maxWidth-1);
@@ -61,7 +62,8 @@ void createRoom(int **map, int maxRow, int maxCol) {
             for (j = y1; j < y2; j++) {
                 if (getRand(0, 100) > 95) {
                     *(*(map+i) + j) = NMONSTER;
-                    addMonster(i, j, NKOBOLD);
+                    addMonster(monsters, i, j, NKOBOLD, monsterCount);
+                    *monsterCount += 1;
                 } else {
                     *(*(map+i) + j) = NFLOOR;
                 }
@@ -78,25 +80,29 @@ void createRoom(int **map, int maxRow, int maxCol) {
 
 void drawMap(int **map, int maxRow, int maxCol) {
     int tValue;
-    char tile;
+    char tile = '?';
     int **ptr = &map[0]; 
     int maxFOV = 10;
     
     for(int i = 0; i < maxRow; i++){
         for(int j = 0; j < maxCol; j++){
             tValue = map[i][j]; 
-            if (tValue == NFLOOR) {
-                tile = FLOOR;
-            } else if (tValue == NWALL) {
-                tile = WALL;
-            } else if (tValue == NDOOR) {
-                tile = DOOR;
-            } else if (tValue == NSTAIRCASE) {
-                tile = STAIRCASE;
-            } else if (tValue == NMONSTER) {
-                tile = KOBOLD;
-            } else {
-                tile = '?';
+            switch (tValue) {
+                case NFLOOR:
+                    tile = FLOOR;
+                    break;
+                case NWALL:
+                    tile = WALL;
+                    break;
+                case NDOOR:
+                    tile = DOOR;
+                    break;
+                case NSTAIRCASE:
+                    tile = STAIRCASE;
+                    break;
+                case NMONSTER:
+                    tile = KOBOLD;
+                    break;
             }
             mvaddch(i, j, tile);
         }

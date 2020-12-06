@@ -4,14 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+static Monster filler;
+static Monster *ptr_filler = &filler;
 static Monster kobold;
 static Monster *ptr_kobold = &kobold;
+static Monster orc;
+static Monster *ptr_orc = &orc;
 
-static MonsterList monsters;
 
-void loadMonsters() {
-    monsters.numMonsters = 0;
-    monsters.monList = malloc(sizeof(Monster)*90);
+void loadMonsters(Monster **monsters) {
+    initMonster(ptr_filler, NFILLER);
     initMonster(ptr_kobold, NKOBOLD);
 }
 
@@ -28,6 +30,8 @@ void initMonster(Monster *monster, int type) {
     setSymbol(monster);
     int hp = 0;
     switch (monster->type) {
+        case NFILLER:
+            hp = -1;
         case NKOBOLD:
             hp = 10;
             break;
@@ -35,36 +39,57 @@ void initMonster(Monster *monster, int type) {
             hp = 20;
             break;
     }
+    monster->hp = hp;
     monster->alive = true;
 }
 
-void addMonster(int x, int y, int type) {
-    Monster tempMonster;
-    Monster *ptr_monster;
+//Called by createRoom() in map_generator.c 
+void addMonster(Monster **monsters, int x, int y, int type, int *count) {
+    Monster *tempMonster;
+    Monster *ptr_monster = monsters[*count];
+    int isFiller = 0;
     switch (type) {
+        case NFILLER:
+            tempMonster = ptr_filler;
+            isFiller = 1;
         case NKOBOLD:
-            tempMonster = kobold;
-            ptr_monster = ptr_kobold; 
+            tempMonster = ptr_kobold;
             break;
+        case NORC:
+            tempMonster = ptr_orc;
     }
-    initMonster(ptr_monster, type);
-    tempMonster.x = x;
-    tempMonster.y = y;
-    memcpy(&tempMonster, &monsters.monList[monsters.numMonsters], sizeof(Monster));
-    monsters.numMonsters++;
+
+    initMonster(tempMonster, type);
+    tempMonster->x = x;
+    tempMonster->y = y;
+    memcpy(&monsters[*count], &tempMonster,sizeof tempMonster);
+}
+
+//Called by attack() in player.c
+Monster *getMonsterAt(int x, int y, Monster **monsters, int *monsterCount) {
+    Monster errorMonster;
+    Monster *ptr_error;
+    for (int i = 0; i < *monsterCount; i++) {
+        if (monsters[i]->x == x && monsters[i]->y == y) {
+            return monsters[i];
+        }
+    }
+    return ptr_orc;
 }
 
 void setSymbol(Monster *monster) {
     switch (monster->type) {
         case NKOBOLD:
             monster->symbol = KOBOLD;
+        case NORC:
+            monster->symbol = ORC;
     }
 }
 
 void freeMonsters() {
     for (int i = 0; i < 90; i++) {
-        free(monsters.monList[i]);
+        //free(&monsters.monList[i]);
     }
-    free(monsters.monList);
+    //free(&monsters.monList);
 }
 

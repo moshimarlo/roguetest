@@ -1,13 +1,18 @@
+//CONSTRAINTS
+#define MAXMONSTERS 150 
+
 //CHARACTER SYMBOLS
-#define PLAYER_SYMBOL "@"
+#define PLAYER_SYMBOL '@' 
 #define KOBOLD 'K'
 #define ORC 'O'
 #define RAT 'r'
+#define FILLER '?'
 
 enum monsterType {
     NKOBOLD,
     NORC,
-    NRAT
+    NRAT,
+    NFILLER
 };
 
 //MAP SYMBOLS
