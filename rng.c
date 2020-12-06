@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 
-pcg32_random_t rng;
+static pcg32_random_t rng;
 
 void initRand() {
     //Set the seed for RNG

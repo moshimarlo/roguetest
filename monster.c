@@ -61,3 +61,10 @@ void setSymbol(Monster *monster) {
     }
 }
 
+void freeMonsters() {
+    for (int i = 0; i < 90; i++) {
+        free(monsters.monList[i]);
+    }
+    free(monsters.monList);
+}
+

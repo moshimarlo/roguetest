@@ -11,7 +11,7 @@ typedef struct Monster {
 
 typedef struct MonsterList {
     int numMonsters;
-    Monster *monList;
+    Monster **monList;
 } MonsterList;
 
 void loadMonsters();
@@ -22,5 +22,6 @@ void addMonster(int x, int y, int type);
 
 void setSymbol(Monster *monster);
 
+void freeMonsters();
 
 #endif
