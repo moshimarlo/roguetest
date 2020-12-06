@@ -29,8 +29,8 @@ void createRoom(int **map, int maxRow, int maxCol) {
     int maxWidth = 12;
     int roomWidth = getRand(minWidth,maxWidth);
     int roomHeight = getRand(minHeight,maxHeight);
-    int x1 = getRand(1, maxRow-1);
-    int y1 = getRand(1, maxCol-1);
+    int x1 = getRand(1, maxRow-maxHeight-1);
+    int y1 = getRand(1, maxCol-maxWidth-1);
     int x2 = x1 + roomHeight;
     int y2 = y1 + roomWidth;
     bool unoccupied = true; 

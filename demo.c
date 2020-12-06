@@ -11,6 +11,7 @@
 #include <unistd.h>
 
 #define DELAY 20000
+#define MAXMONSTERS 20;
 
 int main(int argc, char *argv[]) {
     //Initialise randomisation

@@ -2,6 +2,10 @@
 #define PLAYER_SYMBOL "@"
 #define KOBOLD "K"
 
+enum monsterType {
+    NKOBOLD
+};
+
 //MAP SYMBOLS
 #define FLOOR '.'
 #define WALL '#'
