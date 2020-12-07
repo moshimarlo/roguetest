@@ -2,6 +2,9 @@
 #include "symbols.h"
 #include "monster.h"
 #include "rng.h"
+#include "window.h"
+
+#include <ncurses.h>
 
 
 void initPlayer(Player *player, int x, int y, int hp) {
@@ -25,20 +28,30 @@ void collisionTest(Player *player, int **map, int row, int col, Monster **monste
         return;
     }
     if (map[player->playerX][player->playerY] == NMONSTER) {
-        attack(player, map, player->playerX, player->playerY, monsters, monsterCount);
+        playerAttack(player, map, player->playerX, player->playerY, monsters, monsterCount);
     }
     player->prevX = player->playerX;
     player->prevY = player->playerY;
 }
 
 //Called by collisionTest()
-void attack(Player *player, int **map, int x, int y, Monster **monsters, int *monsterCount) {
+void playerAttack(Player *player, int **map, int x, int y, Monster **monsters, int *monsterCount) {
     Monster *target = getMonsterAt(x, y, monsters, monsterCount); 
-    int hitRoll = getRand(5, 10);
+    int hitRoll = 3; 
     target->hp -= hitRoll;
+    char output[10];
+    sprintf(output, "%d", target->hp);
+    mvwprintw(debug_win, 0, 0, output);
     if (target->hp <= 0) {
         *(*(map+x) + y) = NFLOOR;
+    } else {
+        resetPlayerPos(player);
     }
+}
+
+void playerMove(Player *player, int x, int y) {
+    player->playerX = x;
+    player->playerY = y;
 }
 
 void resetPlayerPos(Player *player) {

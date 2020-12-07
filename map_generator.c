@@ -1,7 +1,6 @@
 #include "map_generator.h"
 #include "rng.h"
 #include "symbols.h"
-#include "monster.h"
 
 #include <ncurses.h>
 #include <stdlib.h>
@@ -17,15 +16,15 @@ void initMap(int **map, int maxRow, int maxCol) {
 }
 
 //Called by demo.c
-void randomizeMap(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount) {
+void randomizeMap(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount, Player *player) {
     int maxRooms = 30;
     for (int i = 0; i < maxRooms; i++) {
-        createRoom(map, maxRow, maxCol, monsters, monsterCount); 
+        createRoom(map, maxRow, maxCol, monsters, monsterCount, player); 
     }
 }
 
 //Called by randomizeMap()
-void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount) {
+void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount, Player *player) {
     int i, j;
     int minWidth = 5;
     int minHeight = 3;
@@ -33,7 +32,6 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
     int maxWidth = 12;
     int roomWidth = getRand(minWidth, maxWidth);
     int roomHeight = getRand(minHeight, maxHeight);
-    int monX, monY;
     int x1 = getRand(1, maxRow-maxHeight-1);
     int y1 = getRand(1, maxCol-maxWidth-1);
     int x2 = x1 + roomHeight;
@@ -67,6 +65,9 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
                 } else {
                     *(*(map+i) + j) = NFLOOR;
                 }
+                if (i == x2 - x1 && j == y2 - y1) {
+                    playerMove(player, i, j);
+                }
             }
         }
         //while (monsterCount > 0) {
@@ -81,8 +82,8 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
 void drawMap(int **map, int maxRow, int maxCol) {
     int tValue;
     char tile = '?';
-    int **ptr = &map[0]; 
-    int maxFOV = 10;
+    //TODO: implement FOV
+    //int maxFOV = 10;
     
     for(int i = 0; i < maxRow; i++){
         for(int j = 0; j < maxCol; j++){

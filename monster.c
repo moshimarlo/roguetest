@@ -15,6 +15,7 @@ static Monster *ptr_orc = &orc;
 void loadMonsters(Monster **monsters) {
     initMonster(ptr_filler, NFILLER);
     initMonster(ptr_kobold, NKOBOLD);
+    initMonster(ptr_orc, NORC);
 }
 
 
@@ -32,6 +33,7 @@ void initMonster(Monster *monster, int type) {
     switch (monster->type) {
         case NFILLER:
             hp = -1;
+            break;
         case NKOBOLD:
             hp = 10;
             break;
@@ -45,18 +47,17 @@ void initMonster(Monster *monster, int type) {
 
 //Called by createRoom() in map_generator.c 
 void addMonster(Monster **monsters, int x, int y, int type, int *count) {
-    Monster *tempMonster;
-    Monster *ptr_monster = monsters[*count];
-    int isFiller = 0;
+    Monster *tempMonster = malloc(sizeof(Monster*));
     switch (type) {
         case NFILLER:
             tempMonster = ptr_filler;
-            isFiller = 1;
+            break;
         case NKOBOLD:
             tempMonster = ptr_kobold;
             break;
         case NORC:
             tempMonster = ptr_orc;
+            break;
     }
 
     initMonster(tempMonster, type);
@@ -67,8 +68,6 @@ void addMonster(Monster **monsters, int x, int y, int type, int *count) {
 
 //Called by attack() in player.c
 Monster *getMonsterAt(int x, int y, Monster **monsters, int *monsterCount) {
-    Monster errorMonster;
-    Monster *ptr_error;
     for (int i = 0; i < *monsterCount; i++) {
         if (monsters[i]->x == x && monsters[i]->y == y) {
             return monsters[i];
@@ -81,8 +80,10 @@ void setSymbol(Monster *monster) {
     switch (monster->type) {
         case NKOBOLD:
             monster->symbol = KOBOLD;
+            break;
         case NORC:
             monster->symbol = ORC;
+            break;
     }
 }
 
