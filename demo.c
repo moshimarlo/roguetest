@@ -16,6 +16,8 @@
 #define DELAY 20000
 #define WINDOW_HEIGHT 2 
 
+char debug_buffer[20];
+
 int main(int argc, char *argv[]) {
     //Initialise randomisation
     initRand();
@@ -26,14 +28,16 @@ int main(int argc, char *argv[]) {
     initPlayer(ptr_player, 10, 10, 100);
 
     //Initialise monsters
-    Monster **monsters;
     int monsterCount = 0;
     int *ptr_monster_count = &monsterCount;
-    monsters = malloc(sizeof(Monster)*MAXMONSTERS);
+    Monster **monsters = malloc(sizeof(Monster*)*MAXMONSTERS);
     loadMonsters(monsters);
 
     //Input-related variables
     int inputSig = 0;
+
+    //Debug output
+    //char debug_buffer[20];
 
     //Initialise curses
     int row;
@@ -44,25 +48,32 @@ int main(int argc, char *argv[]) {
     curs_set(FALSE);
     keypad(stdscr, TRUE);
 
-    mvaddch(ptr_player->playerY, ptr_player->playerX, PLAYER_SYMBOL);
 
     //Window
+    game_win = newwin(row-WINDOW_HEIGHT, col, 0, 0); 
+    debug_win = newwin(WINDOW_HEIGHT, col, row-WINDOW_HEIGHT, 0);
+
+    mvwaddch(game_win, ptr_player->playerY, ptr_player->playerX, PLAYER_SYMBOL);
 
     //Initialise map
     int **map;
     //Allow room for window
     row -= WINDOW_HEIGHT;
+
     map = (int**)malloc(sizeof(*map)*row);
     for (int i = 0; i < row; i++) {
         map[i] = (int*)malloc(sizeof(map[i]) * col);
     }
     initMap(map, row, col);
     randomizeMap(map, row, col, monsters, ptr_monster_count, ptr_player);
-    drawMap(map, row, col);
+    drawMap(game_win, map, row, col);
     
     //MAIN GAME LOOP
     while (inputSig != 1){
+        char str1[20] = "Hello";
+        printToBuffer(debug_buffer, str1);
         //Store player's previous position
+        inputSig = 0;
         inputSig = handleInput(ptr_player);
         
         if (inputSig == 2) {
@@ -77,22 +88,25 @@ int main(int argc, char *argv[]) {
         collisionTest(ptr_player, map, row, col, monsters, ptr_monster_count);
 
         //Clear screen after input
-        clear();
+        wclear(game_win);
+        wclear(debug_win);
 
         //Draw map
-        drawMap(map, row, col);
+        drawMap(game_win, map, row, col);
+
+        printBuffer(debug_buffer, debug_win);
 
         //Draw character
-        mvaddch(ptr_player->playerX, ptr_player->playerY, PLAYER_SYMBOL); 
+        mvwaddch(game_win, ptr_player->playerX, ptr_player->playerY, PLAYER_SYMBOL); 
 
-        refresh();
+        wrefresh(game_win);
         wrefresh(debug_win);
        
         usleep(DELAY);
     }	
 
     freeMap(map, row);
-    freeMonsters();
+    freeMonsters(monsters);
     endwin();
 }
 

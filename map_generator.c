@@ -1,6 +1,7 @@
 #include "map_generator.h"
 #include "rng.h"
 #include "symbols.h"
+#include "window.h"
 
 #include <ncurses.h>
 #include <stdlib.h>
@@ -18,6 +19,7 @@ void initMap(int **map, int maxRow, int maxCol) {
 //Called by demo.c
 void randomizeMap(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount, Player *player) {
     int maxRooms = 30;
+    *monsterCount = 0;
     for (int i = 0; i < maxRooms; i++) {
         createRoom(map, maxRow, maxCol, monsters, monsterCount, player); 
     }
@@ -59,9 +61,11 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
         for (i = x1; i < x2; i++) {
             for (j = y1; j < y2; j++) {
                 if (getRand(0, 100) > 95) {
-                    *(*(map+i) + j) = NMONSTER;
-                    addMonster(monsters, i, j, NKOBOLD, monsterCount);
-                    *monsterCount += 1;
+                    if (*monsterCount < MAXMONSTERS) {
+                        *(*(map+i) + j) = NMONSTER;
+                        addMonster(monsters, i, j, NKOBOLD, monsterCount);
+                        *monsterCount += 1;
+                    }
                 } else {
                     *(*(map+i) + j) = NFLOOR;
                 }
@@ -79,7 +83,7 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
     }
 }
 
-void drawMap(int **map, int maxRow, int maxCol) {
+void drawMap(WINDOW *window, int **map, int maxRow, int maxCol) {
     int tValue;
     char tile = '?';
     //TODO: implement FOV
@@ -105,7 +109,7 @@ void drawMap(int **map, int maxRow, int maxCol) {
                     tile = KOBOLD;
                     break;
             }
-            mvaddch(i, j, tile);
+            mvwaddch(window, i, j, tile);
         }
     }
 }

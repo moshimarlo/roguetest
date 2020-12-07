@@ -39,8 +39,9 @@ void playerAttack(Player *player, int **map, int x, int y, Monster **monsters, i
     Monster *target = getMonsterAt(x, y, monsters, monsterCount); 
     int hitRoll = 3; 
     target->hp -= hitRoll;
-    char output[10];
+    char output[20];
     sprintf(output, "%d", target->hp);
+    printToBuffer(debug_buffer, output);
     mvwprintw(debug_win, 0, 0, output);
     if (target->hp <= 0) {
         *(*(map+x) + y) = NFLOOR;

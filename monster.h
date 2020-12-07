@@ -24,6 +24,6 @@ Monster *getMonsterAt(int x, int y, Monster **monsters, int *monsterCount);
 
 void setSymbol(Monster *monster);
 
-void freeMonsters();
+void freeMonsters(Monster **monsters);
 
 #endif

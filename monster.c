@@ -14,8 +14,15 @@ static Monster *ptr_orc = &orc;
 
 void loadMonsters(Monster **monsters) {
     initMonster(ptr_filler, NFILLER);
+    ptr_filler->x = 0;
+    ptr_filler->y = 0;
     initMonster(ptr_kobold, NKOBOLD);
     initMonster(ptr_orc, NORC);
+    
+    for (int i = 0; i < MAXMONSTERS; i++) {
+        monsters[i] = malloc(sizeof(Monster*));
+        *monsters[i] = *ptr_kobold;
+    }
 }
 
 
@@ -29,13 +36,13 @@ void loadMonsters(Monster **monsters) {
 void initMonster(Monster *monster, int type) {
     monster->type = type;
     setSymbol(monster);
-    int hp = 0;
+    int hp = 20;
     switch (monster->type) {
         case NFILLER:
-            hp = -1;
+            hp = 20;
             break;
         case NKOBOLD:
-            hp = 10;
+            hp = 20;
             break;
         case NORC:
             hp = 20;
@@ -47,28 +54,17 @@ void initMonster(Monster *monster, int type) {
 
 //Called by createRoom() in map_generator.c 
 void addMonster(Monster **monsters, int x, int y, int type, int *count) {
-    Monster *tempMonster = malloc(sizeof(Monster*));
-    switch (type) {
-        case NFILLER:
-            tempMonster = ptr_filler;
-            break;
-        case NKOBOLD:
-            tempMonster = ptr_kobold;
-            break;
-        case NORC:
-            tempMonster = ptr_orc;
-            break;
-    }
-
-    initMonster(tempMonster, type);
-    tempMonster->x = x;
-    tempMonster->y = y;
-    memcpy(&monsters[*count], &tempMonster,sizeof tempMonster);
+    Monster newMonster;
+    Monster *ptr_monster = &newMonster;
+    initMonster(ptr_monster, type);
+    memcpy(&monsters[*count], &ptr_kobold, sizeof(Monster*));
+    (*monsters[*count]).x = x;
+    (*monsters[*count]).y = y;
 }
 
 //Called by attack() in player.c
 Monster *getMonsterAt(int x, int y, Monster **monsters, int *monsterCount) {
-    for (int i = 0; i < *monsterCount; i++) {
+    for (int i = 0; i < MAXMONSTERS; i++) {
         if (monsters[i]->x == x && monsters[i]->y == y) {
             return monsters[i];
         }
@@ -87,9 +83,9 @@ void setSymbol(Monster *monster) {
     }
 }
 
-void freeMonsters() {
-    for (int i = 0; i < 90; i++) {
-        //free(&monsters.monList[i]);
+void freeMonsters(Monster **monsters) {
+    for (int i = 0; i < MAXMONSTERS; i++) {
+        //free(&monsters.[i]);
     }
     //free(&monsters.monList);
 }
