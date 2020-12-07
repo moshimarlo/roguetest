@@ -30,7 +30,11 @@ int main(int argc, char *argv[]) {
     //Initialise monsters
     int monsterCount = 0;
     int *ptr_monster_count = &monsterCount;
-    Monster **monsters = malloc(sizeof(Monster*)*MAXMONSTERS);
+    Monster **monsters = malloc(sizeof(**monsters)*MAXMONSTERS);
+    for (int i = 0; i < MAXMONSTERS; i++) {
+        monsters[i] = malloc(sizeof(*monsters));
+    }
+
     loadMonsters(monsters);
 
     //Input-related variables

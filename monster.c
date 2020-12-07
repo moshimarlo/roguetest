@@ -14,15 +14,8 @@ static Monster *ptr_orc = &orc;
 
 void loadMonsters(Monster **monsters) {
     initMonster(ptr_filler, NFILLER);
-    ptr_filler->x = 0;
-    ptr_filler->y = 0;
     initMonster(ptr_kobold, NKOBOLD);
     initMonster(ptr_orc, NORC);
-    
-    for (int i = 0; i < MAXMONSTERS; i++) {
-        monsters[i] = malloc(sizeof(Monster*));
-        *monsters[i] = *ptr_kobold;
-    }
 }
 
 
@@ -36,16 +29,16 @@ void loadMonsters(Monster **monsters) {
 void initMonster(Monster *monster, int type) {
     monster->type = type;
     setSymbol(monster);
-    int hp = 20;
+    int hp = 0;
     switch (monster->type) {
         case NFILLER:
-            hp = 20;
+            hp = 1000;
             break;
         case NKOBOLD:
-            hp = 20;
+            hp = 5;
             break;
         case NORC:
-            hp = 20;
+            hp = 15;
             break;
     }
     monster->hp = hp;
@@ -57,12 +50,13 @@ void addMonster(Monster **monsters, int x, int y, int type, int *count) {
     Monster newMonster;
     Monster *ptr_monster = &newMonster;
     initMonster(ptr_monster, type);
-    memcpy(&monsters[*count], &ptr_kobold, sizeof(Monster*));
-    (*monsters[*count]).x = x;
-    (*monsters[*count]).y = y;
+    //memcpy(&monsters[*count], &ptr_kobold, sizeof(Monster*));
+    monsters[*count]->x = x;
+    monsters[*count]->y = y;
+    monsters[*count]->hp = 10;
 }
 
-//Called by attack() in player.c
+//Called by playerAttack() in player.c
 Monster *getMonsterAt(int x, int y, Monster **monsters, int *monsterCount) {
     for (int i = 0; i < MAXMONSTERS; i++) {
         if (monsters[i]->x == x && monsters[i]->y == y) {
