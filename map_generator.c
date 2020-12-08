@@ -9,9 +9,9 @@
 
 //Fill the map with walls, to be tunneled by randomizeMap
 void initMap(int **map, int maxRow, int maxCol) {
-    for (int i = 0; i < maxRow; i++) {
-        for (int j = 0; j < maxCol; j++) {
-            *(*(map+i) + j) = NWALL;
+    for (int i = 0; i < maxCol; i++) {
+        for (int j = 0; j < maxRow; j++) {
+            *(*(map+j) + i) = NWALL;
         }
     }
 }
@@ -49,29 +49,29 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
     }
 
     //Check if new room overlaps existing room
-    for (i = y1; i < y2; i++) {
-        for (j = x1; j < x2; j++) {
-            if (*(*(map+i) + j) == NFLOOR) {
+    for (i = x1; i < x2; i++) {
+        for (j = y1; j < y2; j++) {
+            if (*(*(map+j) + i) == NFLOOR) {
                 unoccupied = false;
             }
         }
     }
 
     if (unoccupied) {
-        for (i = y1; i < y2; i++) {
-            for (j = x1; j < x2; j++) {
+        for (i = x1; i < x2; i++) {
+            for (j = y1; j < y2; j++) {
                 if (getRand(0, 100) > 95) {
                     if (*monsterCount < MAXMONSTERS) {
-                        *(*(map+i) + j) = NMONSTER;
-                        addMonster(monsters, i, j, NKOBOLD, monsterCount);
+                        *(*(map+j) + i) = NMONSTER;
+                        addMonster(monsters, j, i, NKOBOLD, monsterCount);
                         *monsterCount += 1;
                     }
                 } else {
-                    *(*(map+i) + j) = NFLOOR;
+                    *(*(map+j) + i) = NFLOOR;
                 }
                 //TODO: fix this weird shit
                 if (i == y2 - y1 && j == x2 - x1) {
-                    playerMove(player, i, j);
+                    playerMove(player, j, i);
                 }
             }
         }

@@ -23,11 +23,11 @@ void collisionTest(Player *player, int **map, int row, int col, Monster **monste
         resetPlayerPos(player);
         return;
     }
-    if (*(*(map+player->playerY) + player->playerX) == NWALL) {
+    if (*(*(map+player->playerX) + player->playerY) == NWALL) {
         resetPlayerPos(player);
         return;
     }
-    if (*(*(map+player->playerY) + player->playerX) == NMONSTER) {
+    if (*(*(map+player->playerX) + player->playerY) == NMONSTER) {
         playerAttack(player, map, player->playerX, player->playerY, monsters);
     }
     player->prevX = player->playerX;
@@ -43,7 +43,7 @@ void playerAttack(Player *player, int **map, int x, int y, Monster **monsters) {
     sprintf(output, "%d", target->hp);
     printToBuffer(debug_buffer, output);
     if (target->hp <= 0) {
-        *(*(map+y) + x) = NFLOOR;
+        *(*(map+x) + y) = NFLOOR;
     } else {
         resetPlayerPos(player);
     }
