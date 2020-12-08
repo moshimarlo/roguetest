@@ -6,16 +6,14 @@
 
 static Monster filler;
 static Monster *ptr_filler = &filler;
-static Monster kobold;
-static Monster *ptr_kobold = &kobold;
-static Monster orc;
-static Monster *ptr_orc = &orc;
+//static Monster kobold;
+//static Monster *ptr_kobold = &kobold;
+//static Monster orc;
+//static Monster *ptr_orc = &orc;
 
 
 void loadMonsters() {
     initMonster(ptr_filler, NFILLER);
-    initMonster(ptr_kobold, NKOBOLD);
-    initMonster(ptr_orc, NORC);
 }
 
 
@@ -28,7 +26,7 @@ void loadMonsters() {
 //} Monster;
 void initMonster(Monster *monster, int type) {
     monster->type = type;
-    setSymbol(monster);
+    setSymbol(type);
     int hp = 0;
     switch (monster->type) {
         case NFILLER:
@@ -47,13 +45,11 @@ void initMonster(Monster *monster, int type) {
 
 //Called by createRoom() in map_generator.c 
 void addMonster(Monster **monsters, int x, int y, int type, int *count) {
-    Monster newMonster;
-    Monster *ptr_monster = &newMonster;
-    initMonster(ptr_monster, type);
-    //memcpy(&monsters[*count], &ptr_kobold, sizeof(Monster*));
     monsters[*count]->x = x;
     monsters[*count]->y = y;
-    monsters[*count]->hp = 10;
+    monsters[*count]->symbol = setSymbol(type);
+    monsters[*count]->hp = setMonsterHP(type); 
+    monsters[*count]->alive = true;
 }
 
 //Called by playerAttack() in player.c
@@ -71,15 +67,30 @@ char getMonsterTile(int x, int y, Monster **monsters) {
     return monster->symbol;
 }
 
-void setSymbol(Monster *monster) {
-    switch (monster->type) {
+char setSymbol(int type) {
+    char symbol = '?';
+    switch (type) {
         case NKOBOLD:
-            monster->symbol = KOBOLD;
+            symbol = KOBOLD;
             break;
         case NORC:
-            monster->symbol = ORC;
+            symbol = ORC;
             break;
     }
+    return symbol;
+}
+
+int setMonsterHP(int type) {
+    int hp = 1000;
+    switch (type) {
+        case NKOBOLD:
+            hp = KOBOLD_HP;
+            break;
+        case NORC:
+            hp = ORC_HP;
+            break;
+    }
+    return hp;
 }
 
 void freeMonsters(Monster **monsters) {

@@ -30,8 +30,8 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
     int i, j;
     int minWidth = 5;
     int maxWidth = 12;
-    int minHeight = 3;
-    int maxHeight = 6; 
+    int minHeight = 5;
+    int maxHeight = 9; 
     int roomWidth = getRand(minWidth, maxWidth);
     int roomHeight = getRand(minHeight, maxHeight);
     int x1 = getRand(1, maxCol-maxWidth-1);
@@ -42,8 +42,8 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
     
     //Check if the room's maximum x and y coordinates would go out of bounds
     while (x2 > maxCol || y2 > maxRow) {
-        x1 = getRand(1, maxCol-1);
-        y1 = getRand(1, maxRow-1);
+        x1 = getRand(1, maxCol-maxWidth-1);
+        y1 = getRand(1, maxRow-maxHeight-1);
         x2 = x1 + roomWidth;
         y2 = y1 + roomHeight;
     }
@@ -60,27 +60,29 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
     if (unoccupied) {
         for (i = x1; i < x2; i++) {
             for (j = y1; j < y2; j++) {
-                if (getRand(0, 100) > 95) {
+                bool isWall = false;
+                //Pad the room with walls
+                if (i == x1 || i == x2-1 || j == y1 || j == y2-1) {
+                    *(*(map+j) + i) = NWALL;
+                    isWall = true;
+                } else {
+                    *(*(map+j) + i) = NFLOOR;
+                }
+
+                if (getRand(0, 100) > 95 && !isWall) {
                     if (*monsterCount < MAXMONSTERS) {
                         *(*(map+j) + i) = NMONSTER;
                         addMonster(monsters, j, i, NKOBOLD, monsterCount);
                         *monsterCount += 1;
                     }
-                } else {
-                    *(*(map+j) + i) = NFLOOR;
                 }
+                
                 //TODO: fix this weird shit
                 if (i == y2 - y1 && j == x2 - x1) {
                     playerMove(player, j, i);
                 }
             }
         }
-        //while (monsterCount > 0) {
-        //    monX = getRand(x1, x2-1);
-        //    monY = getRand(y1, y2-1);
-        //    *(*(map+monX) + monY) = NMONSTER;
-        //    monsterCount--;
-        //}
     }
 }
 
