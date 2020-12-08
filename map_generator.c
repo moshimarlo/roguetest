@@ -29,28 +29,28 @@ void randomizeMap(int **map, int maxRow, int maxCol, Monster **monsters, int *mo
 void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount, Player *player) {
     int i, j;
     int minWidth = 5;
+    int maxWidth = 12;
     int minHeight = 3;
     int maxHeight = 6; 
-    int maxWidth = 12;
     int roomWidth = getRand(minWidth, maxWidth);
     int roomHeight = getRand(minHeight, maxHeight);
-    int x1 = getRand(1, maxRow-maxHeight-1);
-    int y1 = getRand(1, maxCol-maxWidth-1);
-    int x2 = x1 + roomHeight;
-    int y2 = y1 + roomWidth;
+    int x1 = getRand(1, maxCol-maxWidth-1);
+    int y1 = getRand(1, maxRow-maxHeight-1);
+    int x2 = x1 + roomWidth;
+    int y2 = y1 + roomHeight;
     bool unoccupied = true; 
     
     //Check if the room's maximum x and y coordinates would go out of bounds
-    while (x2 > maxRow || y2 > maxCol) {
+    while (x2 > maxCol || y2 > maxRow) {
         x1 = getRand(1, maxCol-1);
         y1 = getRand(1, maxRow-1);
-        x2 = x1 + roomHeight;
-        y2 = y1 + roomWidth;
+        x2 = x1 + roomWidth;
+        y2 = y1 + roomHeight;
     }
 
     //Check if new room overlaps existing room
-    for (i = x1; i < x2; i++) {
-        for (j = y1; j < y2; j++) {
+    for (i = y1; i < y2; i++) {
+        for (j = x1; j < x2; j++) {
             if (*(*(map+i) + j) == NFLOOR) {
                 unoccupied = false;
             }
@@ -58,8 +58,8 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
     }
 
     if (unoccupied) {
-        for (i = x1; i < x2; i++) {
-            for (j = y1; j < y2; j++) {
+        for (i = y1; i < y2; i++) {
+            for (j = x1; j < x2; j++) {
                 if (getRand(0, 100) > 95) {
                     if (*monsterCount < MAXMONSTERS) {
                         *(*(map+i) + j) = NMONSTER;
@@ -69,7 +69,8 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
                 } else {
                     *(*(map+i) + j) = NFLOOR;
                 }
-                if (i == x2 - x1 && j == y2 - y1) {
+                //TODO: fix this weird shit
+                if (i == y2 - y1 && j == x2 - x1) {
                     playerMove(player, i, j);
                 }
             }
@@ -89,9 +90,9 @@ void drawMap(WINDOW *window, int **map, int maxRow, int maxCol) {
     //TODO: implement FOV
     //int maxFOV = 10;
     
-    for(int i = 0; i < maxRow; i++){
-        for(int j = 0; j < maxCol; j++){
-            tValue = map[i][j]; 
+    for(int i = 0; i < maxCol; i++){
+        for(int j = 0; j < maxRow; j++){
+            tValue = *(*(map+j) + i); 
             switch (tValue) {
                 case NFLOOR:
                     tile = FLOOR;
@@ -109,14 +110,11 @@ void drawMap(WINDOW *window, int **map, int maxRow, int maxCol) {
                     tile = KOBOLD;
                     break;
             }
-            mvwaddch(window, i, j, tile);
+            mvwaddch(window, j, i, tile);
         }
     }
 }
 
-void freeMap(int **map, int maxRow) {
-    for (int i = 0; i < maxRow; i++) {
-        free(map[i]);
-    }
+void freeMap(int **map) {
     free(map);
 }

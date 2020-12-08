@@ -14,36 +14,36 @@ void initPlayer(Player *player, int x, int y, int hp) {
 }
 
 //Called by demo.c
-void collisionTest(Player *player, int **map, int row, int col, Monster **monsters, int *monsterCount) {
-    if(player->playerX > row-1 || player->playerX < 0) {
+void collisionTest(Player *player, int **map, int row, int col, Monster **monsters) {
+    if(player->playerX > col-1 || player->playerX < 0) {
         resetPlayerPos(player);
         return;
     }
-    if(player->playerY > col-1 || player->playerY < 0) {
+    if(player->playerY > row-1 || player->playerY < 0) {
         resetPlayerPos(player);
         return;
     }
-    if (map[player->playerX][player->playerY] == NWALL) {
+    if (*(*(map+player->playerY) + player->playerX) == NWALL) {
         resetPlayerPos(player);
         return;
     }
-    if (map[player->playerX][player->playerY] == NMONSTER) {
-        playerAttack(player, map, player->playerX, player->playerY, monsters, monsterCount);
+    if (*(*(map+player->playerY) + player->playerX) == NMONSTER) {
+        playerAttack(player, map, player->playerX, player->playerY, monsters);
     }
     player->prevX = player->playerX;
     player->prevY = player->playerY;
 }
 
 //Called by collisionTest()
-void playerAttack(Player *player, int **map, int x, int y, Monster **monsters, int *monsterCount) {
-    Monster *target = getMonsterAt(x, y, monsters, monsterCount); 
+void playerAttack(Player *player, int **map, int x, int y, Monster **monsters) {
+    Monster *target = getMonsterAt(x, y, monsters); 
     int hitRoll = 3; 
     target->hp -= hitRoll;
     char output[20];
     sprintf(output, "%d", target->hp);
     printToBuffer(debug_buffer, output);
     if (target->hp <= 0) {
-        *(*(map+x) + y) = NFLOOR;
+        *(*(map+y) + x) = NFLOOR;
     } else {
         resetPlayerPos(player);
     }

@@ -14,13 +14,13 @@ typedef struct MonsterList {
     Monster *monList[];
 } MonsterList;
 
-void loadMonsters(Monster **monsters);
+void loadMonsters();
 
 void initMonster(Monster *monster, int type);
 
 void addMonster(Monster **monsters, int x, int y, int type, int *monsterCount);
 
-Monster *getMonsterAt(int x, int y, Monster **monsters, int *monsterCount); 
+Monster *getMonsterAt(int x, int y, Monster **monsters); 
 
 void setSymbol(Monster *monster);
 

@@ -12,7 +12,7 @@ static Monster orc;
 static Monster *ptr_orc = &orc;
 
 
-void loadMonsters(Monster **monsters) {
+void loadMonsters() {
     initMonster(ptr_filler, NFILLER);
     initMonster(ptr_kobold, NKOBOLD);
     initMonster(ptr_orc, NORC);
@@ -57,13 +57,13 @@ void addMonster(Monster **monsters, int x, int y, int type, int *count) {
 }
 
 //Called by playerAttack() in player.c
-Monster *getMonsterAt(int x, int y, Monster **monsters, int *monsterCount) {
+Monster *getMonsterAt(int x, int y, Monster **monsters) {
     for (int i = 0; i < MAXMONSTERS; i++) {
         if (monsters[i]->x == x && monsters[i]->y == y) {
             return monsters[i];
         }
     }
-    return ptr_orc;
+    return ptr_filler;
 }
 
 void setSymbol(Monster *monster) {
@@ -79,8 +79,8 @@ void setSymbol(Monster *monster) {
 
 void freeMonsters(Monster **monsters) {
     for (int i = 0; i < MAXMONSTERS; i++) {
-        //free(&monsters.[i]);
+        free(monsters[i]);
     }
-    //free(&monsters.monList);
+    free(monsters);
 }
 

@@ -59,15 +59,19 @@ int main(int argc, char *argv[]) {
 
     mvwaddch(game_win, ptr_player->playerY, ptr_player->playerX, PLAYER_SYMBOL);
 
-    //Initialise map
-    int **map;
     //Allow room for window
     row -= WINDOW_HEIGHT;
 
-    map = (int**)malloc(sizeof(*map)*row);
+    //Initialise map
+    int **map = malloc(sizeof(*map)*row);
     for (int i = 0; i < row; i++) {
-        map[i] = (int*)malloc(sizeof(map[i]) * col);
+        map[i] = malloc(sizeof(map[i])*col);
     }
+    //map = (int**)malloc(sizeof(*map)*row);
+    //for (int i = 0; i < row; i++) {
+    //    map[i] = (int*)malloc(sizeof(map[i]) * col);
+    //}
+
     initMap(map, row, col);
     randomizeMap(map, row, col, monsters, ptr_monster_count, ptr_player);
     drawMap(game_win, map, row, col);
@@ -89,7 +93,7 @@ int main(int argc, char *argv[]) {
         
         //If player tries to move outside the screen or into a wall, reset
         //coordinates to stored value
-        collisionTest(ptr_player, map, row, col, monsters, ptr_monster_count);
+        collisionTest(ptr_player, map, row, col, monsters);
 
         //Clear screen after input
         wclear(game_win);
@@ -109,7 +113,7 @@ int main(int argc, char *argv[]) {
         usleep(DELAY);
     }	
 
-    freeMap(map, row);
+    freeMap(map);
     freeMonsters(monsters);
     endwin();
 }
