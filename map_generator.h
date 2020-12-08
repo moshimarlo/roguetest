@@ -14,7 +14,7 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
 
 void drawMap(WINDOW *window, int **map, int maxRow, int maxCol);
 
-void freeMap(int **map);
+void freeMap(int **map, int maxRow);
 
 
 #endif

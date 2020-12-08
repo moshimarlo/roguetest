@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
         usleep(DELAY);
     }	
 
-    freeMap(map);
+    freeMap(map, row);
     freeMonsters(monsters);
     endwin();
 }
