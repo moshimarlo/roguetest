@@ -12,7 +12,7 @@ void randomizeMap(int **map, int maxRow, int maxCol, Monster **monsters, int *mo
 
 void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount, Player *player); 
 
-void drawMap(WINDOW *window, int **map, int maxRow, int maxCol);
+void drawMap(WINDOW *window, int **map, int maxRow, int maxCol, Monster **monsters);
 
 void freeMap(int **map, int maxRow);
 

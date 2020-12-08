@@ -66,6 +66,11 @@ Monster *getMonsterAt(int x, int y, Monster **monsters) {
     return ptr_filler;
 }
 
+char getMonsterTile(int x, int y, Monster **monsters) {
+    Monster *monster = getMonsterAt(x, y, monsters);
+    return monster->symbol;
+}
+
 void setSymbol(Monster *monster) {
     switch (monster->type) {
         case NKOBOLD:

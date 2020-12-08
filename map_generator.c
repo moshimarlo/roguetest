@@ -84,7 +84,7 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
     }
 }
 
-void drawMap(WINDOW *window, int **map, int maxRow, int maxCol) {
+void drawMap(WINDOW *window, int **map, int maxRow, int maxCol, Monster **monsters) {
     int tValue;
     char tile = '?';
     //TODO: implement FOV
@@ -107,7 +107,7 @@ void drawMap(WINDOW *window, int **map, int maxRow, int maxCol) {
                     tile = STAIRCASE;
                     break;
                 case NMONSTER:
-                    tile = KOBOLD;
+                    tile = getMonsterTile(j, i, monsters);
                     break;
             }
             mvwaddch(window, j, i, tile);

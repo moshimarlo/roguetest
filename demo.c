@@ -74,7 +74,10 @@ int main(int argc, char *argv[]) {
 
     initMap(map, row, col);
     randomizeMap(map, row, col, monsters, ptr_monster_count, ptr_player);
-    drawMap(game_win, map, row, col);
+    drawMap(game_win, map, row, col, monsters);
+
+    wrefresh(game_win);
+    wrefresh(debug_win);
     
     //MAIN GAME LOOP
     while (inputSig != 1){
@@ -100,7 +103,7 @@ int main(int argc, char *argv[]) {
         wclear(debug_win);
 
         //Draw map
-        drawMap(game_win, map, row, col);
+        drawMap(game_win, map, row, col, monsters);
 
         printBuffer(debug_buffer, debug_win);
 

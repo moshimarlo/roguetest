@@ -22,6 +22,8 @@ void addMonster(Monster **monsters, int x, int y, int type, int *monsterCount);
 
 Monster *getMonsterAt(int x, int y, Monster **monsters); 
 
+char getMonsterTile(int x, int y, Monster **monsters); 
+
 void setSymbol(Monster *monster);
 
 void freeMonsters(Monster **monsters);

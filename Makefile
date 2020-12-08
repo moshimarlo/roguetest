@@ -14,4 +14,5 @@ demo: $(OBJ)
 clean:
 	rm *.o
 	rm -f demo
+	rm -f log*
 
