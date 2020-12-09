@@ -1,5 +1,5 @@
-#include "rng.h"
 #include "pcg_basic.h"
+#include "rng.h"
 #include "symbols.h"
 #include "input_handler.h"
 #include "map_generator.h"
@@ -94,8 +94,8 @@ int main(int argc, char *argv[]) {
             randomizeMap(map, row, col, monsters, ptr_monster_count, ptr_player);
         }
         
-        //If player tries to move outside the screen or into a wall, reset
-        //coordinates to stored value
+        /*If player tries to move outside the screen or into a wall, reset
+          coordinates to stored value*/
         collisionTest(ptr_player, map, row, col, monsters);
 
         //Clear screen after input

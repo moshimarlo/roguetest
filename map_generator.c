@@ -30,8 +30,8 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
     int i, j;
     int minWidth = 5;
     int maxWidth = 12;
-    int minHeight = 5;
-    int maxHeight = 9; 
+    int minHeight = 4;
+    int maxHeight = 7; 
     int roomWidth = getRand(minWidth, maxWidth);
     int roomHeight = getRand(minHeight, maxHeight);
     int x1 = getRand(1, maxCol-maxWidth-1);
