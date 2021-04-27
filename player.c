@@ -14,7 +14,7 @@ void init_player(Player * player, int x, int y, int hp)
 
 //Called by demo.c
 void collision_test(Player * player, int **map, int max_y, int max_x,
-		   Monster ** monsters)
+		    Monster ** monsters)
 {
 	if (player->curr_x > max_x - 1 || player->curr_x < 0) {
 		reset_player_pos(player);
@@ -24,11 +24,11 @@ void collision_test(Player * player, int **map, int max_y, int max_x,
 		reset_player_pos(player);
 		return;
 	}
-	if (*(*(map + player->curr_x) + player->curr_y) == NWALL) {
+	if (map[player->curr_x][player->curr_y] == NWALL) {
 		reset_player_pos(player);
 		return;
 	}
-	if (*(*(map + player->curr_x) + player->curr_y) == NMONSTER) {
+	if (map[player->curr_x][player->curr_y] == NMONSTER) {
 		player_attack(player, map, player->curr_x, player->curr_y,
 			      monsters);
 	}
@@ -36,7 +36,7 @@ void collision_test(Player * player, int **map, int max_y, int max_x,
 	player->prev_y = player->curr_y;
 }
 
-//Called by collisionTest()
+//Called by collision_test()
 void player_attack(Player * player, int **map, int x, int y, Monster ** monsters)
 {
 	Monster *target = get_monster_at(x, y, monsters);

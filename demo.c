@@ -63,9 +63,9 @@ int main(int argc, char *argv[])
 	screen_height -= WINDOW_HEIGHT;
 
 	// Initialise map
-	int **map = malloc(sizeof(*map) * screen_height);
-	for (int i = 0; i < screen_height; i++) {
-		map[i] = malloc(sizeof(map[i]) * screen_width);
+	int **map = malloc(sizeof(*map) * screen_width);
+	for (int i = 0; i < screen_width; i++) {
+		map[i] = malloc(sizeof(map[i]) * screen_height);
 	}
 
 	init_map(map, screen_height, screen_width);

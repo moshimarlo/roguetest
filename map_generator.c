@@ -11,7 +11,7 @@ void init_map(int **map, int max_height, int max_width)
 {
 	for (int i = 0; i < max_width; i++) {
 		for (int j = 0; j < max_height; j++) {
-			*(* (map + j) + i) = NWALL;
+			map[i][j] = NWALL;
 		}
 	}
 }
@@ -64,20 +64,21 @@ void create_room(int **map, int max_height, int max_width, Monster ** monsters,
 	if (unoccupied) {
 		for (i = x1; i < x2; i++) {
 			for (j = y1; j < y2; j++) {
-				bool isWall = false;
+				bool is_wall = false;
 				//Pad the room with walls
 				if (i == x1 || i == x2 - 1 || j == y1
 				    || j == y2 - 1) {
-					*(*(map + j) + i) = NWALL;
-					isWall = true;
+					*(*(map + i) + j) = NWALL;
+					is_wall = true;
+				//Draw room floor
 				} else {
-					*(*(map + j) + i) = NFLOOR;
+					*(*(map + i) + j) = NFLOOR;
 				}
 
-				if (get_rand(0, 100) > 95 && !isWall) {
+				if (get_rand(0, 100) > 95 && !is_wall) {
 					if (*monster_count < MAXMONSTERS) {
-						*(*(map + j) + i) = NMONSTER;
-						add_monster(monsters, j, i,
+						*(*(map + i) + j) = NMONSTER;
+						add_monster(monsters, i, j,
 							   NKOBOLD,
 							   monster_count);
 						*monster_count += 1;
@@ -85,14 +86,14 @@ void create_room(int **map, int max_height, int max_width, Monster ** monsters,
 				}
 				//TODO: fix this weird shit
 				if (i == y2 - y1 && j == x2 - x1) {
-					player_move(player, j, i);
+					player_move(player, i, j);
 				}
 			}
 		}
 	}
 }
 
-void draw_map(TCOD_Console * window, int **map, int maxRow, int maxCol,
+void draw_map(TCOD_Console * window, int **map, int max_height, int max_width,
 	     Monster ** monsters)
 {
 	int tValue;
@@ -100,9 +101,9 @@ void draw_map(TCOD_Console * window, int **map, int maxRow, int maxCol,
 	//TODO: implement FOV
 	//int maxFOV = 10;
 
-	for (int i = 0; i < maxCol; i++) {
-		for (int j = 0; j < maxRow; j++) {
-			tValue = *(* (map + j) + i);
+	for (int i = 0; i < max_width; i++) {
+		for (int j = 0; j < max_height; j++) {
+			tValue = *(* (map + i) + j);
 			switch (tValue) {
 			case NFLOOR:
 				tile = FLOOR;
@@ -117,11 +118,11 @@ void draw_map(TCOD_Console * window, int **map, int maxRow, int maxCol,
 				tile = STAIRCASE;
 				break;
 			case NMONSTER:
-				tile = get_monster_tile(j, i, monsters);
+				tile = get_monster_tile(i, j, monsters);
 				break;
 			}
 
-			TCOD_console_set_char(window, j, i, tile);
+			TCOD_console_set_char(window, i, j, tile);
 		}
 	}
 }
