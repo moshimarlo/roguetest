@@ -121,7 +121,7 @@ void draw_map(TCOD_Console * window, int **map, int maxRow, int maxCol,
 				break;
 			}
 
-			TCOD_console_set_char(window, i, j, tile);
+			TCOD_console_set_char(window, j, i, tile);
 		}
 	}
 }

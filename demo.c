@@ -81,8 +81,6 @@ int main(int argc, char *argv[])
 
 	// MAIN GAME LOOP
 	while (input_sig != 1) {
-		char str1[20] = "Hello";
-		print_to_buffer(debug_buffer, str1);
 		// Store player's previous position
 		input_sig = 0;
 		input_sig = handle_input(ptr_player);
