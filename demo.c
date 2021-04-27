@@ -7,118 +7,118 @@
 #include "monster.h"
 #include "window.h"
 
-#include <ncurses.h>
+#include <libtcod.h>
 
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 
 #define DELAY 20000
-#define WINDOW_HEIGHT 2 
+#define WINDOW_HEIGHT 2
 
 char debug_buffer[20];
 
-int main(int argc, char *argv[]) {
-    //Initialise randomisation
-    initRand();
+int main(int argc, char *argv[])
+{
+	// Initialise randomisation
+	init_rand();
 
-    //Initialise player values
-    Player player;
-    Player *ptr_player = &player;
-    initPlayer(ptr_player, 10, 10, 100);
+	// Initialise player values
+	Player player;
+	Player *ptr_player = &player;
+	init_player(ptr_player, 10, 10, 100);
 
-    //Initialise monsters
-    int monsterCount = 0;
-    int *ptr_monster_count = &monsterCount;
-    Monster **monsters = malloc(sizeof(**monsters)*MAXMONSTERS);
-    for (int i = 0; i < MAXMONSTERS; i++) {
-        monsters[i] = malloc(sizeof(*monsters));
-    }
+	// Initialise monsters
+	int monster_count = 0;
+	int *ptr_monster_count = &monster_count;
+	Monster **monsters = malloc(sizeof(**monsters) * MAXMONSTERS);
+	for (int i = 0; i < MAXMONSTERS; i++) {
+		monsters[i] = malloc(sizeof(*monsters));
+	}
 
-    loadMonsters(monsters);
+	load_monsters(monsters);
 
-    //Input-related variables
-    int inputSig = 0;
+	// Input-related variables
+	int input_sig = 0;
 
-    //Debug output
-    //char debug_buffer[20];
+	// Debug output
+	// char debug_buffer[20];
 
-    //Initialise curses
-    int row;
-    int col;
-    initscr();
-    getmaxyx(stdscr,row,col);
-    noecho();
-    curs_set(FALSE);
-    keypad(stdscr, TRUE);
+	// Initialise libtcod 
+	int screen_height = 50;
+	int screen_width = 80;
+	TCOD_console_init_root(80, 50, "roguetest", false,
+			       TCOD_RENDERER_OPENGL);
+	TCOD_console_set_default_background(NULL, TCOD_black);
+	TCOD_console_set_default_foreground(NULL, TCOD_white);
 
+	// Window
+	game_win = TCOD_console_new(80, 50);
+	debug_win = TCOD_console_new(20, 3);
 
-    //Window
-    game_win = newwin(row-WINDOW_HEIGHT, col, 0, 0); 
-    debug_win = newwin(WINDOW_HEIGHT, col, row-WINDOW_HEIGHT, 0);
+	TCOD_console_set_char(game_win, ptr_player->curr_x,
+			      ptr_player->curr_y, PLAYER_SYMBOL);
 
-    mvwaddch(game_win, ptr_player->playerY, ptr_player->playerX, PLAYER_SYMBOL);
+	// Allow room for window
+	screen_height -= WINDOW_HEIGHT;
 
-    //Allow room for window
-    row -= WINDOW_HEIGHT;
+	// Initialise map
+	int **map = malloc(sizeof(*map) * screen_width);
+	for (int i = 0; i < screen_width; i++) {
+		map[i] = malloc(sizeof(map[i]) * screen_height);
+	}
 
-    //Initialise map
-    int **map = malloc(sizeof(*map)*row);
-    for (int i = 0; i < row; i++) {
-        map[i] = malloc(sizeof(map[i])*col);
-    }
-    //map = (int**)malloc(sizeof(*map)*row);
-    //for (int i = 0; i < row; i++) {
-    //    map[i] = (int*)malloc(sizeof(map[i]) * col);
-    //}
+	init_map(map, screen_height, screen_width);
+	randomize_map(map, screen_height, screen_width, monsters, ptr_monster_count, ptr_player);
+	draw_map(game_win, map, screen_height, screen_width, monsters);
 
-    initMap(map, row, col);
-    randomizeMap(map, row, col, monsters, ptr_monster_count, ptr_player);
-    drawMap(game_win, map, row, col, monsters);
+	TCOD_console_clear(game_win);
+	TCOD_console_clear(debug_win);
+	TCOD_console_clear(NULL);
+	TCOD_console_blit(game_win, 0, 0, 0, 0, NULL, 0, 0, 1.0, 1.0);
+	TCOD_console_blit(debug_win, 0, 0, 0, 0, NULL, 0, 48, 1.0, 1.0);
+	TCOD_console_flush();
 
-    wrefresh(game_win);
-    wrefresh(debug_win);
-    
-    //MAIN GAME LOOP
-    while (inputSig != 1){
-        char str1[20] = "Hello";
-        printToBuffer(debug_buffer, str1);
-        //Store player's previous position
-        inputSig = 0;
-        inputSig = handleInput(ptr_player);
-        
-        if (inputSig == 2) {
-            initMap(map, row, col);
-            //TODO: delete all monsters from array and reset count to zero
-            monsterCount = 0;
-            randomizeMap(map, row, col, monsters, ptr_monster_count, ptr_player);
-        }
-        
-        /*If player tries to move outside the screen or into a wall, reset
-          coordinates to stored value*/
-        collisionTest(ptr_player, map, row, col, monsters);
+	// MAIN GAME LOOP
+	while (input_sig != 1) {
+		// Store player's previous position
+		input_sig = 0;
+		input_sig = handle_input(ptr_player);
 
-        //Clear screen after input
-        wclear(game_win);
-        wclear(debug_win);
+		if (input_sig == 2) {
+			init_map(map, screen_height, screen_width);
+			// TODO: delete all monsters from array and reset count to
+			// zero
+			monster_count = 0;
+			randomize_map(map, screen_height, screen_width, monsters,
+				      ptr_monster_count, ptr_player);
+		}
 
-        //Draw map
-        drawMap(game_win, map, row, col, monsters);
+		/* If player tries to move outside the screen or into a wall, reset
+		 * coordinates to stored value */
+		collision_test(ptr_player, map, screen_height, screen_width, monsters);
 
-        printBuffer(debug_buffer, debug_win);
+		// Clear screen after input
+		TCOD_console_clear(game_win);
+		TCOD_console_clear(debug_win);
+		TCOD_console_clear(NULL);
 
-        //Draw character
-        mvwaddch(game_win, ptr_player->playerX, ptr_player->playerY, PLAYER_SYMBOL); 
+		// Draw map
+		draw_map(game_win, map, screen_height, screen_width, monsters);
 
-        wrefresh(game_win);
-        wrefresh(debug_win);
-       
-        usleep(DELAY);
-    }	
+		print_buffer(debug_buffer, debug_win);
 
-    freeMap(map, row);
-    freeMonsters(monsters);
-    endwin();
+		// Draw character
+		TCOD_console_set_char(game_win, ptr_player->curr_x,
+				      ptr_player->curr_y, PLAYER_SYMBOL);
+
+		TCOD_console_blit(game_win, 0, 0, 0, 0, NULL, 0, 0, 1.0, 1.0);
+		TCOD_console_blit(debug_win, 0, 0, 0, 0, NULL, 0, 48, 1.0, 1.0);
+		TCOD_console_flush();
+
+		usleep(DELAY);
+	}
+
+	free_map(map, screen_height);
+	free_monsters(monsters);
 }
-
-

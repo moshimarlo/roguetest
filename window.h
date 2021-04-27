@@ -1,17 +1,16 @@
 #ifndef WINDOW_H_
 #define WINDOW_H_
-#include <ncurses.h>
+#include <libtcod.h>
 
-
-extern WINDOW *debug_win;
-extern WINDOW *game_win;
+extern TCOD_Console *debug_win;
+extern TCOD_Console *game_win;
 
 extern char debug_buffer[20];
 
-void printToBuffer(char* buffer, char* input); 
+void print_to_buffer(char *buffer, char *input);
 
-void printBuffer(char* buffer, WINDOW *window); 
+void print_buffer(char *buffer, TCOD_Console * window);
 
-WINDOW *initWindow();
+TCOD_Console *init_window();
 
 #endif

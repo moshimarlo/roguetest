@@ -1,20 +1,22 @@
 #include "monster.h"
 #include "player.h"
 
-#include <ncurses.h>
+#include <libtcod.h>
 
 #ifndef MAP_GENERATOR_H
 #define MAP_GENERATOR_H
 
-void initMap(int **map, int maxRow, int maxCol);
+void init_map(int **map, int max_height, int max_width);
 
-void randomizeMap(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount, Player *player);
+void randomize_map(int **map, int max_height, int max_width, Monster ** monsters,
+		  int *monster_count, Player * player);
 
-void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount, Player *player); 
+void create_room(int **map, int max_height, int max_width, Monster ** monsters,
+		int *monster_count, Player * player);
 
-void drawMap(WINDOW *window, int **map, int maxRow, int maxCol, Monster **monsters);
+void draw_map(TCOD_Console * window, int **map, int max_height, int max_width,
+	     Monster ** monsters);
 
-void freeMap(int **map, int maxRow);
-
+void free_map(int **map, int max_height);
 
 #endif
