@@ -5,64 +5,64 @@
 #include "window.h"
 #include <stdio.h>
 
-void initPlayer(Player * player, int x, int y, int hp)
+void init_player(Player * player, int x, int y, int hp)
 {
-	player->playerX = player->prevX = x;
-	player->playerY = player->prevY = y;
+	player->curr_x = player->prev_x = x;
+	player->curr_y = player->prev_y = y;
 	player->hp = hp;
 }
 
 //Called by demo.c
-void collisionTest(Player * player, int **map, int row, int col,
+void collision_test(Player * player, int **map, int max_y, int max_x,
 		   Monster ** monsters)
 {
-	if (player->playerX > col - 1 || player->playerX < 0) {
-		resetPlayerPos(player);
+	if (player->curr_x > max_x - 1 || player->curr_x < 0) {
+		reset_player_pos(player);
 		return;
 	}
-	if (player->playerY > row - 1 || player->playerY < 0) {
-		resetPlayerPos(player);
+	if (player->curr_y > max_y - 1 || player->curr_y < 0) {
+		reset_player_pos(player);
 		return;
 	}
-	if (*(*(map + player->playerX) + player->playerY) == NWALL) {
-		resetPlayerPos(player);
+	if (*(*(map + player->curr_x) + player->curr_y) == NWALL) {
+		reset_player_pos(player);
 		return;
 	}
-	if (*(*(map + player->playerX) + player->playerY) == NMONSTER) {
-		playerAttack(player, map, player->playerX, player->playerY,
-			     monsters);
+	if (*(*(map + player->curr_x) + player->curr_y) == NMONSTER) {
+		player_attack(player, map, player->curr_x, player->curr_y,
+			      monsters);
 	}
-	player->prevX = player->playerX;
-	player->prevY = player->playerY;
+	player->prev_x = player->curr_x;
+	player->prev_y = player->curr_y;
 }
 
 //Called by collisionTest()
-void playerAttack(Player * player, int **map, int x, int y, Monster ** monsters)
+void player_attack(Player * player, int **map, int x, int y, Monster ** monsters)
 {
-	Monster *target = getMonsterAt(x, y, monsters);
-	int hitRoll = 3;
-	target->hp -= hitRoll;
+	Monster *target = get_monster_at(x, y, monsters);
+	int hit_roll = 3;
+	target->hp -= hit_roll;
 	char output[20];
 	sprintf(output, "%d", target->hp);
-	printToBuffer(debug_buffer, output);
+	print_to_buffer(debug_buffer, output);
 	if (target->hp <= 0) {
 		*(*(map + x) + y) = NFLOOR;
 		target->alive = false;
 		sprintf(output, "You killed a %c", target->symbol);
-		printToBuffer(debug_buffer, output);
+		print_to_buffer(debug_buffer, output);
 	} else {
-		resetPlayerPos(player);
+		reset_player_pos(player);
 	}
 }
 
-void playerMove(Player * player, int x, int y)
+void player_move(Player * player, int x, int y)
 {
-	player->playerX = x;
-	player->playerY = y;
+	player->curr_x = x;
+	player->curr_y = y;
 }
 
-void resetPlayerPos(Player * player)
+void reset_player_pos(Player * player)
 {
-	player->playerX = player->prevX;
-	player->playerY = player->prevY;
+	player->curr_x = player->prev_x;
+	player->curr_y = player->prev_y;
 }

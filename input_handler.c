@@ -2,7 +2,7 @@
 #include "player.h"
 
 
-int handleInput(Player* player){
+int handle_input(Player* player){
 /*Signal:
      *0 - normal
      *1 - exit
@@ -16,35 +16,35 @@ int handleInput(Player* player){
 
     switch(key.vk){
         case TCODK_KP6: //right
-            player->playerY++;
+            player->curr_x++;
             break; 
         case TCODK_KP4: //left
-            player->playerY--;
+            player->curr_x--;
             break;
         case TCODK_KP8: //up
-            player->playerX--;
+            player->curr_y--;
             break;
         case TCODK_KP2: //down
-            player->playerX++;
+            player->curr_y++;
             break;
         case TCODK_KP7://upper-left
-            player->playerY--;
-            player->playerX--;
+            player->curr_x--;
+            player->curr_y--;
             break;
         case TCODK_KP9://upper-right
-            player->playerY++;
-            player->playerX--;
+            player->curr_x++;
+            player->curr_y--;
             break;
         case TCODK_5://randomise
             signal = 2;
             break;
         case TCODK_KP1://lower-left
-            player->playerY--;
-            player->playerX++;
+            player->curr_x--;
+            player->curr_y++;
             break;
         case TCODK_KP3://lower-right
-            player->playerY++;
-            player->playerX++;
+            player->curr_x++;
+            player->curr_y++;
             break;
         case TCODK_ESCAPE: 
             signal = 1;

@@ -7,10 +7,10 @@ extern TCOD_Console *game_win;
 
 extern char debug_buffer[20];
 
-void printToBuffer(char *buffer, char *input);
+void print_to_buffer(char *buffer, char *input);
 
-void printBuffer(char *buffer, TCOD_Console * window);
+void print_buffer(char *buffer, TCOD_Console * window);
 
-TCOD_Console *initWindow();
+TCOD_Console *init_window();
 
 #endif

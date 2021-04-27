@@ -16,20 +16,20 @@ typedef struct MonsterList {
 	Monster *monList[];
 } MonsterList;
 
-void loadMonsters();
+void load_monsters();
 
-void initMonster(Monster * monster, int type);
+void init_monster(Monster * monster, int type);
 
-void addMonster(Monster ** monsters, int x, int y, int type, int *monsterCount);
+void add_monster(Monster ** monsters, int x, int y, int type, int *monsterCount);
 
-Monster *getMonsterAt(int x, int y, Monster ** monsters);
+Monster *get_monster_at(int x, int y, Monster ** monsters);
 
-char getMonsterTile(int x, int y, Monster ** monsters);
+char get_monster_tile(int x, int y, Monster ** monsters);
 
-char setSymbol(int type);
+char set_symbol(int type);
 
-int setMonsterHP(int type);
+int set_monster_hp(int type);
 
-void freeMonsters(Monster ** monsters);
+void free_monsters(Monster ** monsters);
 
 #endif

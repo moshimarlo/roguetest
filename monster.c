@@ -11,9 +11,9 @@ static Monster *ptr_filler = &filler;
 //static Monster orc;
 //static Monster *ptr_orc = &orc;
 
-void loadMonsters()
+void load_monsters()
 {
-	initMonster(ptr_filler, NFILLER);
+	init_monster(ptr_filler, NFILLER);
 }
 
 //typedef struct Monster {
@@ -23,10 +23,10 @@ void loadMonsters()
 //    int hp;       - set by initMonster
 //    bool alive;   - set by initMonster
 //} Monster;
-void initMonster(Monster * monster, int type)
+void init_monster(Monster * monster, int type)
 {
 	monster->type = type;
-	setSymbol(type);
+	set_symbol(type);
 	int hp = 0;
 	switch (monster->type) {
 	case NFILLER:
@@ -44,17 +44,17 @@ void initMonster(Monster * monster, int type)
 }
 
 //Called by createRoom() in map_generator.c 
-void addMonster(Monster ** monsters, int x, int y, int type, int *count)
+void add_monster(Monster ** monsters, int x, int y, int type, int *count)
 {
 	monsters[*count]->x = x;
 	monsters[*count]->y = y;
-	monsters[*count]->symbol = setSymbol(type);
-	monsters[*count]->hp = setMonsterHP(type);
+	monsters[*count]->symbol = set_symbol(type);
+	monsters[*count]->hp = set_monster_hp(type);
 	monsters[*count]->alive = true;
 }
 
 //Called by playerAttack() in player.c
-Monster *getMonsterAt(int x, int y, Monster ** monsters)
+Monster *get_monster_at(int x, int y, Monster ** monsters)
 {
 	for (int i = 0; i < MAXMONSTERS; i++) {
 		if (monsters[i]->x == x && monsters[i]->y == y) {
@@ -64,13 +64,13 @@ Monster *getMonsterAt(int x, int y, Monster ** monsters)
 	return ptr_filler;
 }
 
-char getMonsterTile(int x, int y, Monster ** monsters)
+char get_monster_tile(int x, int y, Monster ** monsters)
 {
-	Monster *monster = getMonsterAt(x, y, monsters);
+	Monster *monster = get_monster_at(x, y, monsters);
 	return monster->symbol;
 }
 
-char setSymbol(int type)
+char set_symbol(int type)
 {
 	char symbol = '?';
 	switch (type) {
@@ -84,7 +84,7 @@ char setSymbol(int type)
 	return symbol;
 }
 
-int setMonsterHP(int type)
+int set_monster_hp(int type)
 {
 	int hp = 1000;
 	switch (type) {
@@ -98,7 +98,7 @@ int setMonsterHP(int type)
 	return hp;
 }
 
-void freeMonsters(Monster ** monsters)
+void free_monsters(Monster ** monsters)
 {
 	for (int i = 0; i < MAXMONSTERS; i++) {
 		free(monsters[i]);

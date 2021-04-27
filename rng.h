@@ -1,8 +1,8 @@
 #ifndef RNG_H
 #define RNG_H
 
-void initRand();
+void init_rand(void);
 
-int getRand(int start, int end);
+int get_rand(int start, int end);
 
 #endif

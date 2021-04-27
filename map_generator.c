@@ -7,49 +7,49 @@
 #include <string.h>
 
 //Fill the map with walls, to be tunneled by randomizeMap
-void initMap(int **map, int maxRow, int maxCol)
+void init_map(int **map, int max_height, int max_width)
 {
-	for (int i = 0; i < maxCol; i++) {
-		for (int j = 0; j < maxRow; j++) {
+	for (int i = 0; i < max_width; i++) {
+		for (int j = 0; j < max_height; j++) {
 			*(* (map + j) + i) = NWALL;
 		}
 	}
 }
 
 //Called by demo.c
-void randomizeMap(int **map, int maxRow, int maxCol, Monster ** monsters,
-		  int *monsterCount, Player * player)
+void randomize_map(int **map, int max_height, int max_width, Monster ** monsters,
+		  int *monster_count, Player * player)
 {
-	int maxRooms = 30;
-	*monsterCount = 0;
-	for (int i = 0; i < maxRooms; i++) {
-		createRoom(map, maxRow, maxCol, monsters, monsterCount, player);
+	int max_rooms = 30;
+	*monster_count = 0;
+	for (int i = 0; i < max_rooms; i++) {
+		create_room(map, max_height, max_width, monsters, monster_count, player);
 	}
 }
 
 //Called by randomizeMap()
-void createRoom(int **map, int maxRow, int maxCol, Monster ** monsters,
-		int *monsterCount, Player * player)
+void create_room(int **map, int max_height, int max_width, Monster ** monsters,
+		int *monster_count, Player * player)
 {
 	int i, j;
-	int minWidth = 5;
-	int maxWidth = 12;
-	int minHeight = 4;
-	int maxHeight = 7;
-	int roomWidth = getRand(minWidth, maxWidth);
-	int roomHeight = getRand(minHeight, maxHeight);
-	int x1 = getRand(1, maxCol - maxWidth - 1);
-	int y1 = getRand(1, maxRow - maxHeight - 1);
-	int x2 = x1 + roomWidth;
-	int y2 = y1 + roomHeight;
+	int min_room_width = 5;
+	int max_room_width = 12;
+	int min_room_height = 4;
+	int max_room_height = 7;
+	int room_width = get_rand(min_room_width, max_room_width);
+	int room_height = get_rand(min_room_height, max_room_height);
+	int x1 = get_rand(1, max_width - max_room_width - 1);
+	int y1 = get_rand(1, max_height - max_room_height - 1);
+	int x2 = x1 + room_width;
+	int y2 = y1 + room_height;
 	bool unoccupied = true;
 
 	//Check if the room's maximum x and y coordinates would go out of bounds
-	while (x2 > maxCol || y2 > maxRow) {
-		x1 = getRand(1, maxCol - maxWidth - 1);
-		y1 = getRand(1, maxRow - maxHeight - 1);
-		x2 = x1 + roomWidth;
-		y2 = y1 + roomHeight;
+	while (x2 > max_width || y2 > max_height) {
+		x1 = get_rand(1, max_width - max_room_width - 1);
+		y1 = get_rand(1, max_height - max_room_height - 1);
+		x2 = x1 + room_width;
+		y2 = y1 + room_height;
 	}
 
 	//Check if new room overlaps existing room
@@ -74,25 +74,25 @@ void createRoom(int **map, int maxRow, int maxCol, Monster ** monsters,
 					*(*(map + j) + i) = NFLOOR;
 				}
 
-				if (getRand(0, 100) > 95 && !isWall) {
-					if (*monsterCount < MAXMONSTERS) {
+				if (get_rand(0, 100) > 95 && !isWall) {
+					if (*monster_count < MAXMONSTERS) {
 						*(*(map + j) + i) = NMONSTER;
-						addMonster(monsters, j, i,
+						add_monster(monsters, j, i,
 							   NKOBOLD,
-							   monsterCount);
-						*monsterCount += 1;
+							   monster_count);
+						*monster_count += 1;
 					}
 				}
 				//TODO: fix this weird shit
 				if (i == y2 - y1 && j == x2 - x1) {
-					playerMove(player, j, i);
+					player_move(player, j, i);
 				}
 			}
 		}
 	}
 }
 
-void drawMap(TCOD_Console * window, int **map, int maxRow, int maxCol,
+void draw_map(TCOD_Console * window, int **map, int maxRow, int maxCol,
 	     Monster ** monsters)
 {
 	int tValue;
@@ -117,7 +117,7 @@ void drawMap(TCOD_Console * window, int **map, int maxRow, int maxCol,
 				tile = STAIRCASE;
 				break;
 			case NMONSTER:
-				tile = getMonsterTile(j, i, monsters);
+				tile = get_monster_tile(j, i, monsters);
 				break;
 			}
 
@@ -126,9 +126,9 @@ void drawMap(TCOD_Console * window, int **map, int maxRow, int maxCol,
 	}
 }
 
-void freeMap(int **map, int maxRow)
+void free_map(int **map, int max_height)
 {
-	for (int i = 0; i < maxRow; i++) {
+	for (int i = 0; i < max_height; i++) {
 		free(map[i]);
 	}
 	free(map);

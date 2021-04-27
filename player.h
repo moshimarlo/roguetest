@@ -3,20 +3,20 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 typedef struct Player {
-	int playerX, playerY, prevX, prevY;
+	int curr_x, curr_y, prev_x, prev_y;
 	int hp;
 } Player;
 
-void initPlayer(Player * player, int x, int y, int hp);
+void init_player(Player * player, int x, int y, int hp);
 
-void collisionTest(Player * player, int **map, int row, int col,
+void collision_test(Player * player, int **map, int row, int col,
 		   Monster ** monsters);
 
-void playerAttack(Player * player, int **map, int x, int y,
+void player_attack(Player * player, int **map, int x, int y,
 		  Monster ** monsters);
 
-void playerMove(Player * player, int x, int y);
+void player_move(Player * player, int x, int y);
 
-void resetPlayerPos(Player * player);
+void reset_player_pos(Player * player);
 
 #endif
