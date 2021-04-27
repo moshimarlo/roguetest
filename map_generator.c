@@ -3,7 +3,6 @@
 #include "symbols.h"
 #include "window.h"
 
-#include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -86,40 +85,41 @@ void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *mons
     }
 }
 
-void drawMap(WINDOW *window, int **map, int maxRow, int maxCol, Monster **monsters) {
-    int tValue;
-    char tile = '?';
-    //TODO: implement FOV
-    //int maxFOV = 10;
-    
-    for(int i = 0; i < maxCol; i++){
-        for(int j = 0; j < maxRow; j++){
-            tValue = *(*(map+j) + i); 
-            switch (tValue) {
-                case NFLOOR:
-                    tile = FLOOR;
-                    break;
-                case NWALL:
-                    tile = WALL;
-                    break;
-                case NDOOR:
-                    tile = DOOR;
-                    break;
-                case NSTAIRCASE:
-                    tile = STAIRCASE;
-                    break;
-                case NMONSTER:
-                    tile = getMonsterTile(j, i, monsters);
-                    break;
-            }
-            mvwaddch(window, j, i, tile);
-        }
-    }
+void drawMap(TCOD_Console *window, int **map, int maxRow, int maxCol, Monster **monsters) {
+	int tValue;
+	char tile = '?';
+	//TODO: implement FOV
+	//int maxFOV = 10;
+
+	for(int i = 0; i < maxCol; i++){
+		for(int j = 0; j < maxRow; j++) {
+			tValue = *(*(map+j) + i); 
+			switch (tValue) {
+				case NFLOOR:
+					tile = FLOOR;
+					break;
+				case NWALL:
+					tile = WALL;
+					break;
+				case NDOOR:
+					tile = DOOR;
+					break;
+				case NSTAIRCASE:
+					tile = STAIRCASE;
+					break;
+				case NMONSTER:
+					tile = getMonsterTile(j, i, monsters);
+					break;
+			    }
+
+			TCOD_console_set_char(window, i, j, tile);
+		}
+	}
 }
 
 void freeMap(int **map, int maxRow) {
-    for (int i = 0; i < maxRow; i++) {
-        free(map[i]);
-    }
-    free(map);
+	for (int i = 0; i < maxRow; i++) {
+		free(map[i]);
+	}
+	free(map);
 }

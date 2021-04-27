@@ -10,58 +10,44 @@ int handleInput(Player* player){
      *2 - randomise test
      * */
     int signal = 0;
-    int ch;
-    ch = getch();
+    TCOD_key_t key;
+    TCOD_event_t ev;
 
-    switch(ch){
-        case KEY_RIGHT:
+    ev = TCOD_sys_wait_for_event(TCOD_EVENT_ANY, &key, NULL, false);
+
+    switch(key.vk){
+        case TCODK_KP6: //right
             player->playerY++;
             break; 
-        case KEY_LEFT:
+        case TCODK_KP4: //left
             player->playerY--;
             break;
-        case KEY_UP:
+        case TCODK_KP8: //up
             player->playerX--;
             break;
-        case KEY_DOWN:
+        case TCODK_KP2: //down
             player->playerX++;
             break;
-        case KEY_A1://upper-left
+        case TCODK_KP7://upper-left
             player->playerY--;
             player->playerX--;
             break;
-        case KEY_HOME://upper-left?
-            player->playerY--;
-            player->playerX--;
-            break;
-        case KEY_A3://upper-right
+        case TCODK_KP9://upper-right
             player->playerY++;
             player->playerX--;
             break;
-        case KEY_PPAGE://pg-up
-            player->playerY++;
-            player->playerX--;
-            break;
-        case '5'://center
+        case TCODK_5://randomise
             signal = 2;
             break;
-        case KEY_C1://lower-left
+        case TCODK_KP1://lower-left
             player->playerY--;
             player->playerX++;
             break;
-        case KEY_END://end
-            player->playerY--;
-            player->playerX++;
-            break;
-        case KEY_C3://lower-right
+        case TCODK_KP3://lower-right
             player->playerY++;
             player->playerX++;
             break;
-        case KEY_NPAGE://pg-down
-            player->playerY++;
-            player->playerX++;
-            break;
-        case 'q': 
+        case TCODK_ESCAPE: 
             signal = 1;
             break;
     } 

@@ -3,6 +3,7 @@
 
 
 #include "player.h"
+#include <libtcod.h>
 
 int handleInput(Player* player);
 
