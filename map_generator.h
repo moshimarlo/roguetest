@@ -8,13 +8,15 @@
 
 void initMap(int **map, int maxRow, int maxCol);
 
-void randomizeMap(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount, Player *player);
+void randomizeMap(int **map, int maxRow, int maxCol, Monster ** monsters,
+		  int *monsterCount, Player * player);
 
-void createRoom(int **map, int maxRow, int maxCol, Monster **monsters, int *monsterCount, Player *player); 
+void createRoom(int **map, int maxRow, int maxCol, Monster ** monsters,
+		int *monsterCount, Player * player);
 
-void drawMap(TCOD_Console *window, int **map, int maxRow, int maxCol, Monster **monsters);
+void drawMap(TCOD_Console * window, int **map, int maxRow, int maxCol,
+	     Monster ** monsters);
 
 void freeMap(int **map, int maxRow);
-
 
 #endif

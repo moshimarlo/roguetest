@@ -6,4 +6,3 @@ void initRand();
 int getRand(int start, int end);
 
 #endif
-
