@@ -50,9 +50,13 @@ int handle_input(Player* player){
 		case TCODK_ESCAPE: 
 		    signal = 1;
 		    break;
+		case TCODK_CHAR:
+		    switch (key.c) {
+			case 'q':
+				signal = 1;
+				break;
+		    }
 	    } 
     }
-
-
     return signal;
 }

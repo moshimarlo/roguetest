@@ -73,6 +73,8 @@ void create_room(int **map, int max_height, int max_width, Monster ** monsters,
 				//Draw room floor
 				} else {
 					*(*(map + i) + j) = NFLOOR;
+					if (i == x1 && j == y1)
+						player_move(player, i, j);
 				}
 
 				if (get_rand(0, 100) > 95 && !is_wall) {
@@ -85,9 +87,9 @@ void create_room(int **map, int max_height, int max_width, Monster ** monsters,
 					}
 				}
 				//TODO: fix this weird shit
-				if (i == y2 - y1 && j == x2 - x1) {
+				/*if (i == y2 - y1 && j == x2 - x1) {
 					player_move(player, i, j);
-				}
+				}*/
 			}
 		}
 	}

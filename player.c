@@ -48,7 +48,7 @@ void player_attack(Player * player, int **map, int x, int y, Monster ** monsters
 	if (target->hp <= 0) {
 		*(*(map + x) + y) = NFLOOR;
 		target->alive = false;
-		sprintf(output, "You killed a %c", target->symbol);
+		sprintf(output, "You killed a %s", target->name);
 		print_to_buffer(debug_buffer, output);
 	} else {
 		reset_player_pos(player);

@@ -1,12 +1,13 @@
 #include <stdbool.h>
 #ifndef MONSTER_H
 #define MONSTER_H
-#define KOBOLD_HP 5
+#define KOBOLD_HP 10 
 #define ORC_HP 20
 typedef struct Monster {
 	int x, y;
 	int type;
 	char symbol;
+	char *name;
 	int hp;
 	bool alive;
 } Monster;
@@ -27,6 +28,8 @@ Monster *get_monster_at(int x, int y, Monster ** monsters);
 char get_monster_tile(int x, int y, Monster ** monsters);
 
 char set_symbol(int type);
+
+void *set_name(Monster *monster);
 
 int set_monster_hp(int type);
 

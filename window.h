@@ -5,7 +5,7 @@
 extern TCOD_Console *debug_win;
 extern TCOD_Console *game_win;
 
-extern char debug_buffer[20];
+extern char debug_buffer[40];
 
 void print_to_buffer(char *buffer, char *input);
 

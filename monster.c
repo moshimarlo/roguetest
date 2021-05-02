@@ -1,7 +1,9 @@
 #include "monster.h"
 #include "symbols.h"
+#include "window.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 static Monster filler;
@@ -49,6 +51,8 @@ void add_monster(Monster ** monsters, int x, int y, int type, int *count)
 	monsters[*count]->x = x;
 	monsters[*count]->y = y;
 	monsters[*count]->symbol = set_symbol(type);
+	monsters[*count]->name = malloc(sizeof(char)*10);
+	set_name(monsters[*count]);
 	monsters[*count]->hp = set_monster_hp(type);
 	monsters[*count]->alive = true;
 }
@@ -82,6 +86,18 @@ char set_symbol(int type)
 		break;
 	}
 	return symbol;
+}
+
+void *set_name(Monster *monster)
+{
+	switch (monster->type) {
+	case NKOBOLD:
+		strcpy(monster->name, SKOBOLD);
+		break;
+	case NORC:
+		strcpy(monster->name, SORC);
+		break;
+	}
 }
 
 int set_monster_hp(int type)

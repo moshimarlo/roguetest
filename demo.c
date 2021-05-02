@@ -16,7 +16,7 @@
 #define DELAY 20000
 #define WINDOW_HEIGHT 2
 
-char debug_buffer[20];
+char debug_buffer[40];
 
 int main(int argc, char *argv[])
 {
@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
 	// Initialise monsters
 	int monster_count = 0;
 	int *ptr_monster_count = &monster_count;
-	Monster **monsters = malloc(sizeof(**monsters) * MAXMONSTERS);
+	Monster **monsters = malloc(sizeof(Monster*) * MAXMONSTERS);
 	for (int i = 0; i < MAXMONSTERS; i++) {
-		monsters[i] = malloc(sizeof(*monsters));
+		monsters[i] = malloc(sizeof(Monster));
 	}
 
 	load_monsters(monsters);
@@ -63,9 +63,9 @@ int main(int argc, char *argv[])
 	screen_height -= WINDOW_HEIGHT;
 
 	// Initialise map
-	int **map = malloc(sizeof(*map) * screen_width);
+	int **map = malloc(sizeof(int*) * screen_width);
 	for (int i = 0; i < screen_width; i++) {
-		map[i] = malloc(sizeof(map[i]) * screen_height);
+		map[i] = malloc(sizeof(int) * screen_height);
 	}
 
 	init_map(map, screen_height, screen_width);
@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 		input_sig = 0;
 		input_sig = handle_input(ptr_player);
 
+		// 5 pressed - randomise the map
 		if (input_sig == 2) {
 			init_map(map, screen_height, screen_width);
 			// TODO: delete all monsters from array and reset count to

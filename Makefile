@@ -11,6 +11,7 @@ OBJ = rng.o demo.o input_handler.o map_generator.o pcg_basic.o player.o monster.
 demo: $(OBJ) 
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) 
 
+.PHONY: clean
 clean:
 	rm *.o
 	rm -f demo

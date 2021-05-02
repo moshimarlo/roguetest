@@ -8,6 +8,10 @@
 #define RAT 114			// r
 #define FILLER 63		// ?
 
+#define SKOBOLD "kobold"
+#define SORC "orc"
+#define SRAT "rat"
+
 enum monsterType {
 	NKOBOLD,
 	NORC,
