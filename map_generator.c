@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 //Fill the map with walls, to be tunneled by randomizeMap
 void init_map(int **map, int max_height, int max_width)
@@ -17,96 +18,79 @@ void init_map(int **map, int max_height, int max_width)
 }
 
 //Called by demo.c
-void randomize_map(int **map, int max_height, int max_width, Monster ** monsters,
-		  int *monster_count, Player * player)
+void randomize_map(TCOD_bsp_t *bsp, int **map, int max_height, int max_width)
 {
-	int max_rooms = 30;
-	*monster_count = 0;
-	for (int i = 0; i < max_rooms; i++) {
-		create_room(map, max_height, max_width, monsters, monster_count, player);
-	}
+	TCOD_bsp_t tmp = *bsp;
+	TCOD_bsp_traverse_post_order(&tmp, create_room, map);
 }
 
-//Called by randomizeMap()
-void create_room(int **map, int max_height, int max_width, Monster ** monsters,
-		int *monster_count, Player * player)
+bool create_room(TCOD_bsp_t *node, int **map)
 {
-	int i, j;
-	int min_room_width = 5;
-	int max_room_width = 12;
-	int min_room_height = 4;
-	int max_room_height = 7;
-	int room_width = get_rand(min_room_width, max_room_width);
-	int room_height = get_rand(min_room_height, max_room_height);
-	int x1 = get_rand(1, max_width - max_room_width - 1);
-	int y1 = get_rand(1, max_height - max_room_height - 1);
-	int x2 = x1 + room_width;
-	int y2 = y1 + room_height;
-	bool unoccupied = true;
-
-	//Check if the room's maximum x and y coordinates would go out of bounds
-	while (x2 > max_width || y2 > max_height) {
-		x1 = get_rand(1, max_width - max_room_width - 1);
-		y1 = get_rand(1, max_height - max_room_height - 1);
-		x2 = x1 + room_width;
-		y2 = y1 + room_height;
-	}
-
-	//Check if new room overlaps existing room
-	for (i = x1; i < x2; i++) {
-		for (j = y1; j < y2; j++) {
-			if (*(*(map + j) + i) == NFLOOR) {
-				unoccupied = false;
+	if (TCOD_bsp_is_leaf(node)) {
+		int horiz_thickness = get_rand(1,3);
+		int vert_thickness = get_rand(1,3); 
+		int x1 = node->x + horiz_thickness;
+		int y1 = node->y + vert_thickness;
+		int x2 = node->x + node->w - horiz_thickness; 
+		int y2 = node->y + node->h - vert_thickness;
+		for (int i = x1; i <= x2; i++) {
+			for (int j = y1; j <= y2; j++) {
+				map[i][j] = NFLOOR;
 			}
 		}
 	}
+	return true;
+}
 
-	if (unoccupied) {
-		for (i = x1; i < x2; i++) {
-			for (j = y1; j < y2; j++) {
-				bool is_wall = false;
-				//Pad the room with walls
-				if (i == x1 || i == x2 - 1 || j == y1
-				    || j == y2 - 1) {
-					*(*(map + i) + j) = NWALL;
-					is_wall = true;
-				//Draw room floor
-				} else {
-					*(*(map + i) + j) = NFLOOR;
-					if (i == x1 && j == y1)
-						player_move(player, i, j);
-				}
+void make_path(TCOD_bsp_t *bsp, rlmap_t *mstruct)
+{
+	TCOD_bsp_t tmp = *bsp;
+	TCOD_bsp_traverse_in_order(&tmp, dijkstra, mstruct);
+}
 
-				if (get_rand(0, 100) > 95 && !is_wall) {
-					if (*monster_count < MAXMONSTERS) {
-						*(*(map + i) + j) = NMONSTER;
-						add_monster(monsters, i, j,
-							   NKOBOLD,
-							   monster_count);
-						*monster_count += 1;
-					}
-				}
-				//TODO: fix this weird shit
-				/*if (i == y2 - y1 && j == x2 - x1) {
-					player_move(player, i, j);
-				}*/
+bool dijkstra(TCOD_bsp_t *curr_node, rlmap_t *mstruct)
+{
+	char debug_buffer[40];
+	static int count = 0;
+	static TCOD_bsp_t *prev_node = NULL;
+	if (count == 0) {
+		prev_node = curr_node;
+		return true;
+	}
+	if (TCOD_bsp_is_leaf(curr_node)) {
+		count++;
+		TCOD_dijkstra_t path = TCOD_dijkstra_new(mstruct->fovmap, 1.41f);
+		int root_x = prev_node->x/2;
+		int root_y = prev_node->y/2;
+		int dest_x = curr_node->x/2;
+		int dest_y = curr_node->y/2;
+		TCOD_dijkstra_compute(path, root_x, root_y);
+		bool successful = TCOD_dijkstra_path_set(path, dest_x, dest_y);
+		if (!successful) {
+			strcpy(debug_buffer, "Dijkstra unsuccessful!");
+			print_buffer(debug_buffer, debug_win);
+		} else {
+			for (int i = 0; i < TCOD_dijkstra_size(path); i++) {
+				int curr_x, curr_y;
+				TCOD_dijkstra_get(path, i, &curr_x, &curr_y);
+				mstruct->map[curr_x][curr_y] = NFLOOR;
 			}
 		}
+
 	}
+	prev_node = curr_node;
+	return true;
 }
 
 void draw_map(TCOD_Console * window, int **map, int max_height, int max_width,
 	     Monster ** monsters)
 {
-	int tValue;
+	int tile_value;
 	char tile = '?';
-	//TODO: implement FOV
-	//int maxFOV = 10;
-
 	for (int i = 0; i < max_width; i++) {
 		for (int j = 0; j < max_height; j++) {
-			tValue = *(* (map + i) + j);
-			switch (tValue) {
+			tile_value = *(* (map + i) + j);
+			switch (tile_value) {
 			case NFLOOR:
 				tile = FLOOR;
 				break;
@@ -123,7 +107,6 @@ void draw_map(TCOD_Console * window, int **map, int max_height, int max_width,
 				tile = get_monster_tile(i, j, monsters);
 				break;
 			}
-
 			TCOD_console_set_char(window, i, j, tile);
 		}
 	}

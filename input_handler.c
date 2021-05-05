@@ -1,7 +1,6 @@
 #include "input_handler.h"
 #include "player.h"
 
-
 int handle_input(Player* player){
 /*Signal:
      *0 - normal

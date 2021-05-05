@@ -41,9 +41,6 @@ int main(int argc, char *argv[])
 	// Input-related variables
 	int input_sig = 0;
 
-	// Debug output
-	// char debug_buffer[20];
-
 	// Initialise libtcod 
 	int screen_height = 50;
 	int screen_width = 80;
@@ -68,10 +65,25 @@ int main(int argc, char *argv[])
 		map[i] = malloc(sizeof(int) * screen_height);
 	}
 
-	init_map(map, screen_height, screen_width);
-	randomize_map(map, screen_height, screen_width, monsters, ptr_monster_count, ptr_player);
-	draw_map(game_win, map, screen_height, screen_width, monsters);
+	TCOD_bsp_t *bsptree = TCOD_bsp_new_with_size(0, 0, screen_width, screen_height);
+	TCOD_bsp_split_recursive(bsptree, NULL, 5, 5, 5, 1.7f, 0.6f);
 
+	// Initialise FOV
+	TCOD_map_t fovmap = TCOD_map_new(screen_width, screen_height);
+	TCOD_map_clear(fovmap, false, true);
+
+	init_map(map, screen_height, screen_width);
+	randomize_map(bsptree, map, screen_height, screen_width); 
+
+	// Connect rooms
+	rlmap_t mstruct;
+	rlmap_t *mstruct_p = &mstruct;
+	mstruct_p->map = &map;
+	mstruct_p->fovmap = &fovmap;
+	make_path(bsptree, mstruct_p);
+
+	// Draw the map
+	draw_map(game_win, map, screen_height, screen_width, monsters);
 	TCOD_console_clear(game_win);
 	TCOD_console_clear(debug_win);
 	TCOD_console_clear(NULL);
@@ -87,12 +99,14 @@ int main(int argc, char *argv[])
 
 		// 5 pressed - randomise the map
 		if (input_sig == 2) {
+			TCOD_map_clear(fovmap, false, true);
 			init_map(map, screen_height, screen_width);
 			// TODO: delete all monsters from array and reset count to
 			// zero
 			monster_count = 0;
-			randomize_map(map, screen_height, screen_width, monsters,
-				      ptr_monster_count, ptr_player);
+			bsptree = TCOD_bsp_new_with_size(0, 0, screen_width, screen_height);
+			TCOD_bsp_split_recursive(bsptree, NULL, 5, 5, 5, 1.7f, 0.6f);
+			randomize_map(bsptree, map, screen_height, screen_width); 
 		}
 
 		/* If player tries to move outside the screen or into a wall, reset
