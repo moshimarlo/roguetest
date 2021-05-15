@@ -14,12 +14,7 @@
 #include <string.h>
 
 #define DELAY 20000
-#define SCREEN_HEIGHT 25 
-#define SCREEN_WIDTH 80
 #define WINDOW_HEIGHT 4 
-#define GAMEWIN_HEIGHT SCREEN_HEIGHT
-
-char debug_buffer[40];
 
 int main(void)
 {
@@ -27,9 +22,7 @@ int main(void)
 	init_rand();
 
 	// Initialise player values
-	Player player;
-	Player *ptr_player = &player;
-	init_player(ptr_player, 10, 10, 100);
+	init_player(10, 10, 100);
 
 	// Input-related variables
 	int input_sig = 0;
@@ -39,18 +32,20 @@ int main(void)
 	noecho();
 	curs_set(FALSE);
 	keypad(stdscr, TRUE);
+    int screen_width, screen_height;
+    getmaxyx(stdscr, screen_height, screen_width);
 
 	// Initialise windows
-	game_win = newwin(GAMEWIN_HEIGHT, SCREEN_WIDTH, 0, 0);
+	game_win = newwin(screen_height, screen_width, 0, 0);
 	//debug_win = newwin(WINDOW_HEIGHT, SCREEN_WIDTH, GAMEWIN_HEIGHT, 0);
 
-	mvwaddch(game_win, ptr_player->curr_y, ptr_player->curr_x, PLAYER_SYMBOL);
+    draw_player(game_win);
 
-	init_map(SCREEN_WIDTH, GAMEWIN_HEIGHT);
-	randomize_map(SCREEN_WIDTH, GAMEWIN_HEIGHT);
+	init_map();
+    create_rooms();
 
 	// Draw the map
-	draw_map(game_win, SCREEN_WIDTH, GAMEWIN_HEIGHT);
+	draw_map(game_win, screen_width, screen_height);
 	wrefresh(game_win);
 	//wrefresh(debug_win);
 
@@ -58,36 +53,36 @@ int main(void)
 	while (input_sig != 1) {
 		// Store player's previous position
 		input_sig = 0;
-		input_sig = handle_input(ptr_player);
+		input_sig = player_handle_input();
 
 		// 5 pressed - randomise the map
 		if (input_sig == 2) {
-			reset_map(SCREEN_WIDTH, GAMEWIN_HEIGHT);
-			randomize_map(SCREEN_WIDTH, GAMEWIN_HEIGHT);
+			reset_map();
 			// TODO: delete all monsters from array and reset count to
 			// zero
 		}
 
 		/* If player tries to move outside the screen or into a wall, reset
 		 * coordinates to stored value */
-		collision_test(ptr_player, SCREEN_WIDTH, GAMEWIN_HEIGHT);
+		collision_test();
 
 		// Clear screen after input
 		wclear(game_win);
 		//wclear(debug_win);
 
 		// Draw map
-		draw_map(game_win, SCREEN_WIDTH, GAMEWIN_HEIGHT);
+		draw_map(game_win, screen_width, screen_height);
 
 		//print_buffer(debug_buffer, debug_win);
 
 		// Draw character
-		mvwaddch(game_win, ptr_player->curr_y, ptr_player->curr_x, PLAYER_SYMBOL);
+        draw_player(game_win);
 
 		wrefresh(game_win);
 		//wrefresh(debug_win);
 	}
-	free_map(SCREEN_WIDTH);
+	free_map();
+    free_player();
 	endwin();
 	//free_monsters(monsters);
 }

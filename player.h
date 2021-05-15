@@ -1,4 +1,4 @@
-#include "monster.h"
+#include <ncurses.h>
 
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -7,14 +7,22 @@ typedef struct Player {
 	int hp;
 } Player;
 
-void init_player(Player * player, int x, int y, int hp);
+void init_player(int x, int y, int hp);
 
-void collision_test(Player * player, int row, int col);
+void draw_player(WINDOW *win);
 
-void player_attack(Player * player, int x, int y);
+int player_handle_input(void);
 
-void player_move(Player * player, int x, int y);
+void get_player_xy(int *x, int *y);
 
-void reset_player_pos(Player * player);
+void collision_test();
+
+void player_attack(int x, int y);
+
+void player_move(int x, int y);
+
+void reset_player_pos();
+
+void free_player(void);
 
 #endif
