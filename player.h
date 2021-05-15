@@ -9,11 +9,9 @@ typedef struct Player {
 
 void init_player(Player * player, int x, int y, int hp);
 
-void collision_test(Player * player, int row, int col,
-		   Monster ** monsters);
+void collision_test(Player * player, int row, int col);
 
-void player_attack(Player * player, int x, int y,
-		  Monster ** monsters);
+void player_attack(Player * player, int x, int y);
 
 void player_move(Player * player, int x, int y);
 

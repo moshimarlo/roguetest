@@ -1,4 +1,4 @@
 *.o
 *~
 demo
-logfile*
+valgrind*

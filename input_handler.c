@@ -1,5 +1,6 @@
 #include "input_handler.h"
 #include "player.h"
+#include <ncurses.h>
 
 int handle_input(Player* player){
 /*Signal:
@@ -8,54 +9,47 @@ int handle_input(Player* player){
      *2 - randomise test
      * */
     int signal = 0;
-    TCOD_key_t key;
-    TCOD_event_t ev;
+    int ch = getch();
 
-    ev = TCOD_sys_wait_for_event(TCOD_EVENT_ANY, &key, NULL, false);
-
-    if (key.pressed) {
-	    switch(key.vk){
-		case TCODK_KP6: //right
-		    player->curr_x++;
-		    break; 
-		case TCODK_KP4: //left
-		    player->curr_x--;
-		    break;
-		case TCODK_KP8: //up
-		    player->curr_y--;
-		    break;
-		case TCODK_KP2: //down
-		    player->curr_y++;
-		    break;
-		case TCODK_KP7://upper-left
-		    player->curr_x--;
-		    player->curr_y--;
-		    break;
-		case TCODK_KP9://upper-right
-		    player->curr_x++;
-		    player->curr_y--;
-		    break;
-		case TCODK_5://randomise
-		    signal = 2;
-		    break;
-		case TCODK_KP1://lower-left
-		    player->curr_x--;
-		    player->curr_y++;
-		    break;
-		case TCODK_KP3://lower-right
-		    player->curr_x++;
-		    player->curr_y++;
-		    break;
-		case TCODK_ESCAPE: 
-		    signal = 1;
-		    break;
-		case TCODK_CHAR:
-		    switch (key.c) {
-			case 'q':
-				signal = 1;
-				break;
-		    }
-	    } 
-    }
+    switch(ch){
+	case KEY_RIGHT: //right
+	    player->curr_x++;
+	    break; 
+	case KEY_LEFT: //left
+	    player->curr_x--;
+	    break;
+	case KEY_UP: //up
+	    player->curr_y--;
+	    break;
+	case KEY_DOWN: //down
+	    player->curr_y++;
+	    break;
+	case KEY_A1://upper-left
+    case KEY_HOME:
+	    player->curr_x--;
+	    player->curr_y--;
+	    break;
+	case KEY_A3://upper-right
+    case KEY_PPAGE:
+	    player->curr_x++;
+	    player->curr_y--;
+	    break;
+	case '5'://randomise
+	    signal = 2;
+	    break;
+	case KEY_C1://lower-left
+    case KEY_END:
+	    player->curr_x--;
+	    player->curr_y++;
+	    break;
+	case KEY_C3://lower-right
+    case KEY_NPAGE:
+	    player->curr_x++;
+	    player->curr_y++;
+	    break;
+	case 'q': 
+	    signal = 1;
+	    break;
+    } 
     return signal;
 }

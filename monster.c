@@ -6,25 +6,24 @@
 #include <stdio.h>
 #include <string.h>
 
-static Monster filler;
-static Monster *ptr_filler = &filler;
-//static Monster kobold;
-//static Monster *ptr_kobold = &kobold;
-//static Monster orc;
-//static Monster *ptr_orc = &orc;
+static Monster *monsters;
+static int monster_count;
 
 void load_monsters()
 {
-	init_monster(ptr_filler, NFILLER);
+	Monster filler = { .x = 0,
+			.y = 0,
+			.type = NFILLER,
+			.symbol = FILLER,
+			.name = "Filler",
+			.hp = 1000,
+			.alive = true };
+	monster_count = 0;
+	for (int i = 0; i < MAX_MONSTERS; i++) {
+		monsters[i] = filler;
+	}
 }
 
-//typedef struct Monster {
-//    int x, y;     - set by addMonster
-//    int type;     - set by initMonster
-//    char symbol;  - set by setSymbol, called by initMonster
-//    int hp;       - set by initMonster
-//    bool alive;   - set by initMonster
-//} Monster;
 void init_monster(Monster * monster, int type)
 {
 	monster->type = type;
@@ -46,32 +45,34 @@ void init_monster(Monster * monster, int type)
 }
 
 //Called by createRoom() in map_generator.c 
-void add_monster(Monster ** monsters, int x, int y, int type, int *count)
+void add_monster(int x, int y, int type)
 {
-	monsters[*count]->x = x;
-	monsters[*count]->y = y;
-	monsters[*count]->symbol = set_symbol(type);
-	monsters[*count]->name = malloc(sizeof(char)*10);
-	set_name(monsters[*count]);
-	monsters[*count]->hp = set_monster_hp(type);
-	monsters[*count]->alive = true;
+	monsters[monster_count].x = x;
+	monsters[monster_count].y = y;
+	monsters[monster_count].type = type;
+	monsters[monster_count].symbol = set_symbol(type);
+	set_name(&monsters[monster_count]);
+	monsters[monster_count].hp = set_monster_hp(type);
+	monsters[monster_count].alive = true;
+	++monster_count;
 }
 
-//Called by playerAttack() in player.c
-Monster *get_monster_at(int x, int y, Monster ** monsters)
+//Called by player_attack() in player.c
+Monster *get_monster_at(int x, int y)
 {
-	for (int i = 0; i < MAXMONSTERS; i++) {
-		if (monsters[i]->x == x && monsters[i]->y == y) {
-			return monsters[i];
+	for (int i = 0; i < MAX_MONSTERS; i++) {
+		if (monsters[i].x == x && monsters[i].y == y) {
+			return &monsters[i];
 		}
 	}
-	return ptr_filler;
+	return NULL;
 }
 
-char get_monster_tile(int x, int y, Monster ** monsters)
+char get_monster_tile(int x, int y)
 {
-	Monster *monster = get_monster_at(x, y, monsters);
-	return monster->symbol;
+	/*Monster monster = get_monster_at(x, y, monsters);*/
+	/*return monster.symbol;*/
+	return (get_monster_at(x,y))->symbol;
 }
 
 char set_symbol(int type)
@@ -88,7 +89,7 @@ char set_symbol(int type)
 	return symbol;
 }
 
-void *set_name(Monster *monster)
+void set_name(Monster *monster)
 {
 	switch (monster->type) {
 	case NKOBOLD:
@@ -102,7 +103,7 @@ void *set_name(Monster *monster)
 
 int set_monster_hp(int type)
 {
-	int hp = 1000;
+	int hp = 999;
 	switch (type) {
 	case NKOBOLD:
 		hp = KOBOLD_HP;
@@ -114,10 +115,7 @@ int set_monster_hp(int type)
 	return hp;
 }
 
-void free_monsters(Monster ** monsters)
+void free_monsters(Monster *monsters)
 {
-	for (int i = 0; i < MAXMONSTERS; i++) {
-		free(monsters[i]);
-	}
 	free(monsters);
 }

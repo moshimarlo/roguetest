@@ -6,16 +6,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 static int **map;
 static int leaf_count;
 static TCOD_map_t fovmap;
-static TCOD_bsp_t *bsptree;
-static rlmap_t mstruct;
-static rlmap_t *mstruct_p;
+static TCOD_path_t path;
+static room_t *room_list;
 
 // Allocate memory for map and fill with walls 
-void init_map(int max_height, int max_width)
+void init_map(int max_width, int max_height)
 {
 	map = malloc(sizeof(int*) * max_width);
 	for (int i = 0; i < max_width; i++) {
@@ -24,92 +24,117 @@ void init_map(int max_height, int max_width)
 			map[i][j] = NWALL;
 		}
 	}
+	room_list = malloc(sizeof(room_t));
 
 	// Initialise FOV
 	fovmap = TCOD_map_new(max_width, max_height);
-	TCOD_map_clear(fovmap, false, true);
+	TCOD_map_clear(fovmap, true, true);
 
-	mstruct.map = map;
-	mstruct.fovmap = &fovmap;
-	mstruct_p = &mstruct;
-
-	randomize_map(max_height, max_width); 
-
+	path = TCOD_path_new_using_map(fovmap, 1.0f);
 }
 
-void randomize_map(int max_height, int max_width)
+void reset_map(int max_width, int max_height)
 {
-	bsptree = TCOD_bsp_new_with_size(0, 0, max_width, max_height);
-	TCOD_bsp_split_recursive(bsptree, NULL, 5, 5, 5, 1.7f, 0.6f);
-	leaf_count = 0;
-	TCOD_bsp_t tmp = *bsptree;
-	TCOD_bsp_traverse_post_order(&tmp, create_room, NULL);
+	for (int i = 0; i < max_width; i++) {
+		for (int j = 0; j < max_height; j++) {
+			map[i][j] = NWALL;
+		}
+	}
+	TCOD_map_clear(fovmap, true, true);
+}
+
+// TODO: combine bsp functions
+void randomize_map(int max_width, int max_height)
+{
+	// Create and split tree
+	TCOD_bsp_t *bsptree = TCOD_bsp_new_with_size(0, 0, max_width, max_height);
+	TCOD_bsp_split_recursive(bsptree, NULL, 5, 10, 5, 1.5f, 1.5f);
+
+	// Initialise room list from leaf count
+
+	// Create rooms from tree
+	leaf_count = 1;
+	TCOD_bsp_traverse_level_order(bsptree, create_room, NULL);
 
 	// Connect rooms
-	make_path();
+	//find_nearest(leaf_count);
+
+	//TCOD_bsp_delete(bsptree);
 }
 
-bool create_room(TCOD_bsp_t *node, void *user_data)
+bool create_room(TCOD_bsp_t *node, void *data)
 {
 	if (TCOD_bsp_is_leaf(node)) {
-		++leaf_count;
 		int horiz_thickness = get_rand(1,3);
 		int vert_thickness = get_rand(1,3); 
 		int x1 = node->x + horiz_thickness;
 		int y1 = node->y + vert_thickness;
-		int x2 = node->x + node->w - horiz_thickness; 
-		int y2 = node->y + node->h - vert_thickness;
-		for (int i = x1; i <= x2; i++) {
-			for (int j = y1; j <= y2; j++) {
+		int x2 = x1 + node->w - horiz_thickness;
+		int y2 = y1 + node->h - vert_thickness;
+		int width = x2 - x1;
+		int height = y2 - y1;
+		for (int i = x1; i < x2; i++) {
+			for (int j = y1; j < y2; j++) {
 				map[i][j] = NFLOOR;
 			}
 		}
+		add_room(x1, y1, x2, y2, leaf_count);
+		leaf_count++;	
 	}
 	return true;
 }
 
-void make_path()
+void add_room(int x1, int y1, int x2, int y2, int iter)
 {
-	TCOD_bsp_t tmp = *bsptree;
-	TCOD_bsp_traverse_in_order(&tmp, dijkstra, NULL);
+	room_list = realloc(room_list, sizeof(room_t) * iter);
+	room_list[iter-1].x1 = x1;
+	room_list[iter-1].y1 = y1;
+	room_list[iter-1].x2 = x2;
+	room_list[iter-1].y2 = y2;
+	room_list[iter-1].connected = false;
+	room_list[iter-1].neighbour = NULL;
 }
 
-// Compute dijkstra path connecting the rooms
-bool dijkstra(TCOD_bsp_t *curr_node, void *user_data)
-{
-	char debug_buffer[40];
 
-	static TCOD_bsp_t *prev_node = NULL;
-	if (prev_node == NULL) {
-		prev_node = curr_node;
-		return true;
-	}
-	if (TCOD_bsp_is_leaf(curr_node)) {
-		TCOD_dijkstra_t path = TCOD_dijkstra_new(*mstruct_p->fovmap, 1.41f);
-		int root_x = prev_node->x/2;
-		int root_y = prev_node->y/2;
-		int dest_x = curr_node->x/2;
-		int dest_y = curr_node->y/2;
-		TCOD_dijkstra_compute(path, root_x, root_y);
-		bool successful = TCOD_dijkstra_path_set(path, dest_x, dest_y);
-		if (!successful) {
-			strcpy(debug_buffer, "Dijkstra unsuccessful!");
-			print_buffer(debug_buffer, debug_win);
-		} else {
-			for (int i = 0; i < TCOD_dijkstra_size(path); i++) {
-				int curr_x, curr_y;
-				TCOD_dijkstra_get(path, i, &curr_x, &curr_y);
-				set_tile(curr_x, curr_y, NFLOOR);
+void find_nearest() {
+	for (int room = 0; room < leaf_count; room++) {
+		int x1 = room_list[room].x1;
+		int y1 = room_list[room].y1;
+		int x2 = room_list[room].x2;
+		int y2 = room_list[room].y2;
+		int width = x2 - x1;
+		int height = y2 - y1;
+		int middle_x = x1 + (x2/2);
+		int middle_y = y1 + (y2/2);
+		room_t *neighbour = NULL;
+		for (int i = 0; i < 79; i++) {
+			for (int j = 0; j < 45; j++) {
+				neighbour = get_room(i, j, leaf_count);
+				if (neighbour == NULL)
+					continue;
+				else {
+					room_list[room].neighbour = neighbour;
+					break;
+				}
 			}
+			if (neighbour != NULL)
+				break;
 		}
-
 	}
-	prev_node = curr_node;
-	return true;
 }
 
-void draw_map(TCOD_Console * window, int max_height, int max_width,
-	      Monster ** monsters)
+void connect_point(TCOD_path_t path, int x1, int y1, int x2, int y2)
+{
+	TCOD_path_compute(path, x1, y1, x2, y2); 
+	for (int i = 0; i < TCOD_path_size(path); i++) {
+		int curr_x, curr_y;
+		TCOD_path_get(path, i, &curr_x, &curr_y);
+		set_tile(curr_x, curr_y, NFLOOR);
+		//TCOD_map_set_properties(fovmap, curr_x, curr_y, true, false);
+	}
+}
+
+void draw_map(WINDOW *window, int max_width, int max_height)
 {
 	char tile = '?';
 	for (int i = 0; i < max_width; i++) {
@@ -129,11 +154,25 @@ void draw_map(TCOD_Console * window, int max_height, int max_width,
 				tile = STAIRCASE;
 				break;
 			case NMONSTER:
-				tile = get_monster_tile(i, j, monsters);
+				tile = get_monster_tile(i, j);
 				break;
 			}
-			TCOD_console_set_char(window, i, j, tile);
+			mvwaddch(window, j, i, tile);
 		}
+	}
+}
+
+room_t *get_room(int x, int y, int leaf_count)
+{
+	for (int i = 0; i < leaf_count; i++) {
+		int x1 = room_list[i].x1;
+		int y1 = room_list[i].y1;
+		int x2 = room_list[i].x2;
+		int y2 = room_list[i].y2;
+		if (x1 <= x && x <= x2 && y1 <= y && y <= y2)
+			return &room_list[i];
+		else
+			return NULL;
 	}
 }
 
@@ -165,8 +204,11 @@ bool is_monster(int x, int y)
 
 void free_map(int max_width)
 {
+	TCOD_path_delete(path);
+	TCOD_map_delete(fovmap);
 	for (int i = 0; i < max_width; i++) {
 		free(map[i]);
 	}
+	free(room_list);
 	free(map);
 }

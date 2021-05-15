@@ -1,6 +1,3 @@
-//CONSTRAINTS
-#define MAXMONSTERS 30
-
 //CHARACTER SYMBOLS
 #define PLAYER_SYMBOL 64	// @
 #define KOBOLD 75		// K

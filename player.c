@@ -14,14 +14,13 @@ void init_player(Player * player, int x, int y, int hp)
 }
 
 //Called by demo.c
-void collision_test(Player * player, int max_y, int max_x,
-		    Monster ** monsters)
+void collision_test(Player * player, int max_width, int max_height)
 {
-	if (player->curr_x > max_x - 1 || player->curr_x < 0) {
+	if (player->curr_x > max_width - 1 || player->curr_x < 0) {
 		reset_player_pos(player);
 		return;
 	}
-	if (player->curr_y > max_y - 1 || player->curr_y < 0) {
+	if (player->curr_y > max_height - 1 || player->curr_y < 0) {
 		reset_player_pos(player);
 		return;
 	}
@@ -30,17 +29,16 @@ void collision_test(Player * player, int max_y, int max_x,
 		return;
 	}
 	if (is_monster(player->curr_x, player->curr_y)) {
-		player_attack(player, player->curr_x, player->curr_y,
-			      monsters);
+		player_attack(player, player->curr_x, player->curr_y);
 	}
 	player->prev_x = player->curr_x;
 	player->prev_y = player->curr_y;
 }
 
 //Called by collision_test()
-void player_attack(Player * player, int x, int y, Monster ** monsters)
+void player_attack(Player * player, int x, int y)
 {
-	Monster *target = get_monster_at(x, y, monsters);
+	Monster *target = get_monster_at(x, y);
 	int hit_roll = 3;
 	target->hp -= hit_roll;
 	char output[20];
@@ -56,13 +54,13 @@ void player_attack(Player * player, int x, int y, Monster ** monsters)
 	}
 }
 
-void player_move(Player * player, int x, int y)
+void player_move(Player *player, int x, int y)
 {
 	player->curr_x = x;
 	player->curr_y = y;
 }
 
-void reset_player_pos(Player * player)
+void reset_player_pos(Player *player)
 {
 	player->curr_x = player->prev_x;
 	player->curr_y = player->prev_y;
