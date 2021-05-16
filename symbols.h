@@ -17,6 +17,7 @@ enum monsterType {
 };
 
 //MAP SYMBOLS
+#define BOUNDS 34		// "
 #define FLOOR 46		// .
 #define WALL 35			// #
 #define DOOR 43			// +
@@ -24,6 +25,7 @@ enum monsterType {
 
 //MAP TILE INTS
 enum tile {
+	NBOUNDS,
 	NFLOOR,
 	NWALL,
 	NDOOR,

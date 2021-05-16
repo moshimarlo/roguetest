@@ -13,9 +13,6 @@
 #include <unistd.h>
 #include <string.h>
 
-#define DELAY 20000
-#define WINDOW_HEIGHT 4 
-
 int main(void)
 {
 	// Initialise randomisation
@@ -32,22 +29,26 @@ int main(void)
 	noecho();
 	curs_set(FALSE);
 	keypad(stdscr, TRUE);
-    int screen_width, screen_height;
-    getmaxyx(stdscr, screen_height, screen_width);
+	int screen_width, screen_height;
+	getmaxyx(stdscr, screen_height, screen_width);
 
 	// Initialise windows
+	int dbg_y = screen_height - DEBUG_WIN_HEIGHT;
+	int dbg_x = screen_width - DEBUG_WIN_WIDTH;
 	game_win = newwin(screen_height, screen_width, 0, 0);
-	//debug_win = newwin(WINDOW_HEIGHT, SCREEN_WIDTH, GAMEWIN_HEIGHT, 0);
+	debug_win = newwin(DEBUG_WIN_HEIGHT, DEBUG_WIN_WIDTH, dbg_y, dbg_x);
+	wclear(game_win);
+	wclear(debug_win);
 
-    draw_player(game_win);
+	draw_player(game_win, screen_width, screen_height);
 
 	init_map();
-    create_rooms();
+	create_rooms();
 
 	// Draw the map
 	draw_map(game_win, screen_width, screen_height);
 	wrefresh(game_win);
-	//wrefresh(debug_win);
+	wrefresh(debug_win);
 
 	// MAIN GAME LOOP
 	while (input_sig != 1) {
@@ -68,7 +69,7 @@ int main(void)
 
 		// Clear screen after input
 		wclear(game_win);
-		//wclear(debug_win);
+		wclear(debug_win);
 
 		// Draw map
 		draw_map(game_win, screen_width, screen_height);
@@ -76,13 +77,13 @@ int main(void)
 		//print_buffer(debug_buffer, debug_win);
 
 		// Draw character
-        draw_player(game_win);
+		draw_player(game_win, screen_width, screen_height);
 
 		wrefresh(game_win);
-		//wrefresh(debug_win);
+		wrefresh(debug_win);
 	}
 	free_map();
-    free_player();
+	free_player();
 	endwin();
 	//free_monsters(monsters);
 }

@@ -2,6 +2,9 @@
 #define WINDOW_H_
 #include <ncurses.h>
 
+#define DEBUG_WIN_HEIGHT 5
+#define DEBUG_WIN_WIDTH 30
+
 extern WINDOW *debug_win;
 extern WINDOW *game_win;
 
