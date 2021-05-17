@@ -22,19 +22,13 @@ typedef struct MonsterList {
 } MonsterList;
 
 void load_monsters();
-
 void init_monster(Monster * monster, int type);
-
 void add_monster(int x, int y, int type);
 
 Monster *get_monster_at(int x, int y);
-
 char get_monster_tile(int x, int y);
-
 char set_symbol(int type);
-
 void set_name(Monster *monster);
-
 int set_monster_hp(int type);
 
 void free_monsters(Monster * monsters);

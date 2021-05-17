@@ -18,8 +18,15 @@
 #define ROOM_MIN_HEIGHT 3
 #define ROOM_MAX_HEIGHT 10
 
+// Local functions
+static bool occupied(int x1, int y1, int x2, int y2);
+static void add_room(int x1, int y1, int x2, int y2, int iter);
+static void place_player(void);
+static void render_camera(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy);
+static void render_camera_test(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy);
+
+// Local variables
 static int **map;
-static int leaf_count;
 static room_t *room_list;
 
 // Allocate memory for map and fill with walls 
@@ -35,28 +42,13 @@ void init_map(void)
 	room_list = malloc(sizeof(room_t) * MAX_ROOMS);
 }
 
-void reset_map(void)
+void free_map(void)
 {
 	for (int i = 0; i < MAP_WIDTH; i++) {
-		for (int j = 0; j < MAP_HEIGHT; j++) {
-			map[i][j] = NWALL;
-		}
+		free(map[i]);
 	}
-}
-
-bool occupied(int x1, int y1, int x2, int y2)
-{
-        for (int i = x1; i <= x2; i++) {
-                for (int j = y1; j <= y2; j++) {
-			assert(i >= 0);
-			assert(j >= 0);
-			assert(i < MAP_WIDTH);
-			assert(j < MAP_HEIGHT);
-			if (map[i][j] == NFLOOR)
-				return true;
-                }
-        }
-        return false;
+	free(map);
+	free(room_list);
 }
 
 void create_rooms(void)
@@ -81,13 +73,6 @@ void create_rooms(void)
 	place_player();
 }
 
-void place_player(void)
-{
-	int x = (room_list[0].x1 + room_list[0].x2) / 2;
-	int y = (room_list[0].y1 + room_list[0].y2) / 2;
-	player_move(x, y);
-}
-
 void add_room(int x1, int y1, int x2, int y2, int iter)
 {
         room_list[iter].x1 = x1;
@@ -100,6 +85,42 @@ void add_room(int x1, int y1, int x2, int y2, int iter)
 			map[i][j] = NFLOOR;
 		}
         }
+}
+
+room_t *get_room(int x, int y)
+{
+	for (int i = 0; i < MAX_ROOMS; i++) {
+		int x1 = room_list[i].x1;
+		int y1 = room_list[i].y1;
+		int x2 = room_list[i].x2;
+		int y2 = room_list[i].y2;
+		if (x1 <= x && x <= x2 && y1 <= y && y <= y2)
+			return &room_list[i];
+		else
+			return NULL;
+	}
+}
+
+bool occupied(int x1, int y1, int x2, int y2)
+{
+        for (int i = x1; i <= x2; i++) {
+                for (int j = y1; j <= y2; j++) {
+			assert(i >= 0);
+			assert(j >= 0);
+			assert(i < MAP_WIDTH);
+			assert(j < MAP_HEIGHT);
+			if (map[i][j] == NFLOOR)
+				return true;
+                }
+        }
+        return false;
+}
+
+void place_player(void)
+{
+	int x = (room_list[0].x1 + room_list[0].x2) / 2;
+	int y = (room_list[0].y1 + room_list[0].y2) / 2;
+	player_move(x, y);
 }
 
 void render_camera(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy)
@@ -180,28 +201,23 @@ void draw_map(WINDOW *window, int screen_width, int screen_height)
 	}
 }
 
-room_t *get_room(int x, int y)
+void reset_map(void)
 {
-	for (int i = 0; i < MAX_ROOMS; i++) {
-		int x1 = room_list[i].x1;
-		int y1 = room_list[i].y1;
-		int x2 = room_list[i].x2;
-		int y2 = room_list[i].y2;
-		if (x1 <= x && x <= x2 && y1 <= y && y <= y2)
-			return &room_list[i];
-		else
-			return NULL;
+	for (int i = 0; i < MAP_WIDTH; i++) {
+		for (int j = 0; j < MAP_HEIGHT; j++) {
+			map[i][j] = NWALL;
+		}
 	}
-}
-
-void set_tile(int x, int y, int type)
-{
-	map[x][y] = type;
 }
 
 int get_tile(int x, int y)
 {
 	return map[x][y];
+}
+
+void set_tile(int x, int y, int type)
+{
+	map[x][y] = type;
 }
 
 int get_map_width(void)
@@ -224,11 +240,3 @@ bool is_monster(int x, int y)
 	return map[x][y] == NMONSTER;
 }
 
-void free_map(void)
-{
-	for (int i = 0; i < MAP_WIDTH; i++) {
-		free(map[i]);
-	}
-	free(map);
-	free(room_list);
-}

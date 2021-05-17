@@ -7,22 +7,19 @@ typedef struct Player {
 	int hp;
 } Player;
 
+// Memory allocation
 void init_player(int x, int y, int hp);
+void free_player(void);
 
-void draw_player(WINDOW *win, int screen_width, int screen_height);
-
+// Input
 int player_handle_input(void);
-
-void get_player_xy(int *x, int *y);
-
 void collision_test(void);
 
-void player_attack(int x, int y);
-
+// Movement
+void get_player_xy(int *x, int *y);
 void player_move(int x, int y);
 
-void reset_player_pos(void);
-
-void free_player(void);
+// Drawing
+void draw_player(WINDOW *win, int screen_width, int screen_height);
 
 #endif

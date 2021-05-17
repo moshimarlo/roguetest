@@ -8,6 +8,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Local functions
+void player_attack(int x, int y);
+void reset_player_pos(void);
+
+// Local variables
 static Player *player;
 
 void init_player(int x, int y, int hp)
@@ -18,21 +23,14 @@ void init_player(int x, int y, int hp)
 	player->hp = hp;
 }
 
-void draw_player(WINDOW *win, int screen_width, int screen_height)
+void free_player(void)
 {
-	mvwaddch(win, screen_height/2, screen_width/2, PLAYER_SYMBOL);
-	//mvwaddch(win, player->curr_y, player->curr_x, PLAYER_SYMBOL);
+	free(player);
 }
 
 int player_handle_input(void)
 {
 	return handle_input(player);
-}
-
-void get_player_xy(int *x, int *y)
-{
-	*x = player->curr_x;
-	*y = player->curr_y;
 }
 
 void collision_test(void)
@@ -76,6 +74,13 @@ void player_attack(int x, int y)
 	}
 }
 
+void get_player_xy(int *x, int *y)
+{
+	*x = player->curr_x;
+	*y = player->curr_y;
+}
+
+
 void player_move(int x, int y)
 {
 	player->prev_x = player->curr_x;
@@ -90,7 +95,8 @@ void reset_player_pos(void)
 	player->curr_y = player->prev_y;
 }
 
-void free_player(void)
+void draw_player(WINDOW *win, int screen_width, int screen_height)
 {
-	free(player);
+	mvwaddch(win, screen_height/2, screen_width/2, PLAYER_SYMBOL);
+	//mvwaddch(win, player->curr_y, player->curr_x, PLAYER_SYMBOL);
 }
