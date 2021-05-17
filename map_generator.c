@@ -12,7 +12,7 @@
 #define MAP_WIDTH 100
 #define MAP_HEIGHT 100
 
-#define MAX_ROOMS 30
+#define MAX_ROOMS 10
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 10
 #define ROOM_MIN_HEIGHT 3
@@ -59,7 +59,7 @@ bool occupied(int x1, int y1, int x2, int y2)
         return false;
 }
 
-void create_rooms()
+void create_rooms(void)
 {
         int room_count = 0;
         for (int i = 0; i < MAX_ROOMS; i++) {
@@ -78,6 +78,14 @@ void create_rooms()
                 }
                 add_room(x1, y1, x2, y2, room_count);
         }
+	place_player();
+}
+
+void place_player(void)
+{
+	int x = (room_list[0].x1 + room_list[0].x2) / 2;
+	int y = (room_list[0].y1 + room_list[0].y2) / 2;
+	player_move(x, y);
 }
 
 void add_room(int x1, int y1, int x2, int y2, int iter)
@@ -87,8 +95,8 @@ void add_room(int x1, int y1, int x2, int y2, int iter)
         room_list[iter].x2 = x2;
         room_list[iter].y2 = y2;
 
-        for (int i = x1; i < x2; i++) {
-		for (int j = y1; j < y2; j++) {
+        for (int i = x1; i <= x2; i++) {
+		for (int j = y1; j <= y2; j++) {
 			map[i][j] = NFLOOR;
 		}
         }
@@ -96,8 +104,8 @@ void add_room(int x1, int y1, int x2, int y2, int iter)
 
 void render_camera(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy)
 {
-        int camera_x = player_x - screen_width / 2;        
-        int camera_y = player_y - screen_height / 2;
+        int camera_x = player_x - (screen_width / 2);
+        int camera_y = player_y - (screen_height / 2);
 
         if (camera_x > MAP_WIDTH - screen_width - 1)
 		camera_x = MAP_WIDTH - screen_width - 1;
@@ -111,12 +119,29 @@ void render_camera(int player_x, int player_y, int screen_width, int screen_heig
         *cy = camera_y;
 }
 
+void render_camera_test(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy)
+{
+        int camera_x = player_x - (screen_width / 2);
+        int camera_y = player_y - (screen_height / 2);
+
+        /*if (camera_x > MAP_WIDTH - screen_width - 1)*/
+		/*camera_x = MAP_WIDTH - screen_width - 1;*/
+        /*if (camera_y > MAP_HEIGHT - screen_height - 1)*/
+		/*camera_y = MAP_HEIGHT - screen_height - 1;*/
+        /*if (camera_x < 0)*/
+		/*camera_x = 0;*/
+        /*if (camera_y < 0)*/
+		/*camera_y = 0;*/
+        *cx = camera_x;
+        *cy = camera_y;
+}
+
 void draw_map(WINDOW *window, int screen_width, int screen_height)
 {
 	int player_x, player_y;
 	get_player_xy(&player_x, &player_y);
 	int cx, cy;
-	render_camera(player_x, player_y, screen_width, screen_height, &cx, &cy);
+	render_camera_test(player_x, player_y, screen_width, screen_height, &cx, &cy);
 	int screen_x = 0; 
 	for (int i = cx; i < cx + screen_width; i++) {
 		int screen_y = 0;

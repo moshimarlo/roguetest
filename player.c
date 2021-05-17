@@ -20,8 +20,8 @@ void init_player(int x, int y, int hp)
 
 void draw_player(WINDOW *win, int screen_width, int screen_height)
 {
-	//mvwaddch(win, screen_height/2, screen_width/2, PLAYER_SYMBOL);
-	mvwaddch(win, player->curr_y, player->curr_x, PLAYER_SYMBOL);
+	mvwaddch(win, screen_height/2, screen_width/2, PLAYER_SYMBOL);
+	//mvwaddch(win, player->curr_y, player->curr_x, PLAYER_SYMBOL);
 }
 
 int player_handle_input(void)

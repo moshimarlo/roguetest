@@ -16,9 +16,13 @@ void reset_map(void);
 
 void create_rooms(void);
 
+void place_player(void);
+
 void add_room(int x1, int y1, int x2, int y2, int iter);
 
 void render_camera(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy);
+
+void render_camera_test(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy);
 
 void draw_map(WINDOW *window, int screen_width, int screen_height);
 

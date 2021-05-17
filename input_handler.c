@@ -13,46 +13,36 @@ int handle_input(Player* player){
 
     switch(ch){
 	case KEY_RIGHT: //right
-		//player->curr_x++;
 		player_move(1, 0);
 		break; 
 	case KEY_LEFT: //left
-		//player->curr_x--;
 		player_move(-1, 0);
 		break;
 	case KEY_UP: //up
-		//player->curr_y--;
 		player_move(0, -1);
 		break;
 	case KEY_DOWN: //down
-		//player->curr_y++;
 		player_move(0, 1);
 		break;
-	case KEY_A1://upper-left
+	//case KEY_A1://upper-left
 	case KEY_HOME:
-		/*player->curr_x--;*/
-		/*player->curr_y--;*/
 		player_move(-1, -1);
 		break;
-	case KEY_A3://upper-right
+	//case KEY_A3://upper-right
 	case KEY_PPAGE:
-		/*player->curr_x++;*/
-		/*player->curr_y--;*/
 		player_move(1, -1);
 		break;
 	case '5'://randomise
 		signal = 2;
 		break;
-	case KEY_C1://lower-left
+	case KEY_B2:
+		break;
+	//case KEY_C1://lower-left
 	case KEY_END:
-		/*player->curr_x--;*/
-		/*player->curr_y++;*/
 		player_move(-1, 1);
 		break;
-	case KEY_C3://lower-right
+	//case KEY_C3://lower-right
 	case KEY_NPAGE:
-		/*player->curr_x++;*/
-		/*player->curr_y++;*/
 		player_move(1, 1);
 		break;
 	case 'q': 
