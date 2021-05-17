@@ -17,7 +17,7 @@ all: $(BIN)
 $(BIN): $(OBJ)
 	$(CC) $(LDFLAGS) $^ $(CFLAGS) -o $@ 
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEP)| $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEP) | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR):
