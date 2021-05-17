@@ -9,14 +9,14 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define MAP_WIDTH 100
-#define MAP_HEIGHT 100
+#define MAP_WIDTH 200
+#define MAP_HEIGHT 200
 
-#define MAX_ROOMS 10
+#define MAX_ROOMS 30
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 10
 #define ROOM_MIN_HEIGHT 3
-#define ROOM_MAX_HEIGHT 10
+#define ROOM_MAX_HEIGHT 5
 
 // Local functions
 static bool occupied(int x1, int y1, int x2, int y2);

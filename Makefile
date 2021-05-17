@@ -1,21 +1,32 @@
 # Makefile
 CC=gcc
 CFLAGS=-g #-Wall -Wextra #-pedantic
-#LDFLAGS=`pkg-config libtcod --cflags --libs` -lncurses
 LDFLAGS=-lncurses
-DEPS = input_handler.h map_generator.h pcg_basic.h player.h rng.h symbols.h monster.h window.h
-OBJ = rng.o demo.o input_handler.o map_generator.o pcg_basic.o player.o monster.o window.o
 
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS) $(LDFLAGS) 
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := .
+SRC := $(wildcard $(SRC_DIR)/*.c)
+DEP := $(wildcard $(SRC_DIR)/*.h)
+OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+BIN := $(BIN_DIR)/demo
 
-demo: $(OBJ) 
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) 
+.PHONY: all
+all: $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LDFLAGS) $^ $(CFLAGS) -o $@ 
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEP)| $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR):
+	mkdir -p $@
 
 .PHONY: clean
 clean:
-	rm *.o
-	rm -f demo
+	rm $(OBJ_DIR)/*.o
+	rm -f $(BIN_DIR)/$(BIN)
 	rm -f log*
 
 .PHONY: val
@@ -24,5 +35,5 @@ val:
          --show-leak-kinds=all \
          --track-origins=yes \
          --verbose \
-         --log-file=valgrind-out.txt \
-         ./demo
+         --log-file=log.txt \
+         ./$(BIN)
