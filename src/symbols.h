@@ -17,7 +17,7 @@ enum monsterType {
 };
 
 //MAP SYMBOLS
-#define BOUNDS 34		// "
+#define BOUNDS 32		// whitespace
 #define FLOOR 46		// .
 #define WALL 35			// #
 #define DOOR 43			// +

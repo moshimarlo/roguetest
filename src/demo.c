@@ -21,6 +21,10 @@ int main(void)
 	// Initialise player values
 	init_player(10, 10, 100);
 
+	// Initialise map
+	init_map();
+	create_rooms();
+
 	// Input-related variables
 	int input_sig = 0;
 
@@ -37,30 +41,29 @@ int main(void)
 	int dbg_x = screen_width - DEBUG_WIN_WIDTH;
 	game_win = newwin(screen_height, screen_width, 0, 0);
 	debug_win = newwin(DEBUG_WIN_HEIGHT, DEBUG_WIN_WIDTH, dbg_y, dbg_x);
-	//wclear(game_win);
-	//wclear(debug_win);
 
-	/*draw_player(game_win, screen_width, screen_height);*/
-
-	init_map();
-	create_rooms();
-
-	// Draw the map
-	/*draw_map(game_win, screen_width, screen_height);*/
-	/*wrefresh(game_win);*/
-	/*wrefresh(debug_win);*/
 
 	// MAIN GAME LOOP
 	while (input_sig != 1) {
+		wclear(game_win);
+		wclear(debug_win);
+
+		// Draw map and other window elements
+		draw_map(game_win, screen_width, screen_height);
+
+		int p_x, p_y;
+		char buf[DEBUG_WIN_WIDTH];
+		get_player_xy(&p_x, &p_y);
+		snprintf(buf, DEBUG_WIN_WIDTH, "x: %d\ny: %d", p_x, p_y);
+		mvwaddstr(debug_win,0,0,buf);
+
 		wrefresh(game_win);
 		wrefresh(debug_win);
 
-		draw_map(game_win, screen_width, screen_height);
-		draw_player(game_win, screen_width, screen_height);
 
+		// Get player input
 		input_sig = 0;
 		input_sig = player_handle_input();
-
 		// 5 pressed - randomise the map
 		if (input_sig == 2) {
 			reset_map();
@@ -71,28 +74,8 @@ int main(void)
 		/* If player tries to move outside the screen or into a wall, reset
 		 * coordinates to stored value */
 		collision_test();
-
-		// Clear screen after input
-		wclear(game_win);
-		wclear(debug_win);
-
-		// Draw map
-		draw_map(game_win, screen_width, screen_height);
-
-		//print_buffer(debug_buffer, debug_win);
-
-		// Draw character
-		draw_player(game_win, screen_width, screen_height);
-
-		int p_x, p_y;
-		char buf[DEBUG_WIN_WIDTH];
-		get_player_xy(&p_x, &p_y);
-		snprintf(buf, DEBUG_WIN_WIDTH, "x: %d\ny: %d", p_x, p_y);
-		mvwaddstr(debug_win,0,0,buf);
-		//mvwaddstr(debug_win,0,0,"Hi");
 	}
 	free_map();
 	free_player();
 	endwin();
-	//free_monsters(monsters);
 }

@@ -95,8 +95,10 @@ void reset_player_pos(void)
 	player->curr_y = player->prev_y;
 }
 
-void draw_player(WINDOW *win, int screen_width, int screen_height)
+void draw_player(WINDOW *win, int screen_width, int screen_height, int cx, int cy, bool offset)
 {
-	mvwaddch(win, screen_height/2, screen_width/2, PLAYER_SYMBOL);
-	//mvwaddch(win, player->curr_y, player->curr_x, PLAYER_SYMBOL);
+	if (offset)
+		mvwaddch(win, player->curr_y-cy, player->curr_x-cx, PLAYER_SYMBOL);
+	else
+		mvwaddch(win, screen_height/2, screen_width/2, PLAYER_SYMBOL);
 }

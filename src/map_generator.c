@@ -9,10 +9,10 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define MAP_WIDTH 200
-#define MAP_HEIGHT 200
+#define MAP_WIDTH 100
+#define MAP_HEIGHT 50
 
-#define MAX_ROOMS 30
+#define MAX_ROOMS 10
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 10
 #define ROOM_MIN_HEIGHT 3
@@ -145,14 +145,14 @@ void render_camera_test(int player_x, int player_y, int screen_width, int screen
         int camera_x = player_x - (screen_width / 2);
         int camera_y = player_y - (screen_height / 2);
 
-        /*if (camera_x > MAP_WIDTH - screen_width - 1)*/
-		/*camera_x = MAP_WIDTH - screen_width - 1;*/
-        /*if (camera_y > MAP_HEIGHT - screen_height - 1)*/
-		/*camera_y = MAP_HEIGHT - screen_height - 1;*/
-        /*if (camera_x < 0)*/
-		/*camera_x = 0;*/
-        /*if (camera_y < 0)*/
-		/*camera_y = 0;*/
+	if (camera_x >= MAP_WIDTH - screen_width)
+		camera_x = MAP_WIDTH - screen_width;
+	if (camera_y >= MAP_HEIGHT - screen_height)
+		camera_y = MAP_HEIGHT - screen_height;
+	if (camera_x < 0)
+		camera_x = 0;
+	if (camera_y < 0)
+		camera_y = 0;
         *cx = camera_x;
         *cy = camera_y;
 }
@@ -163,10 +163,11 @@ void draw_map(WINDOW *window, int screen_width, int screen_height)
 	get_player_xy(&player_x, &player_y);
 	int cx, cy;
 	render_camera_test(player_x, player_y, screen_width, screen_height, &cx, &cy);
+	bool offset = (cx <= 0 || cy <= 0 || cx + screen_width >= MAP_WIDTH || cy + screen_height >= MAP_HEIGHT); 
 	int screen_x = 0; 
 	for (int i = cx; i < cx + screen_width; i++) {
 		int screen_y = 0;
-		for (int j = cy; j < cy + screen_height-1; j++) {
+		for (int j = cy; j < cy + screen_height; j++) {
 			char tile = '?';
 			int tile_value;
 			if (i < 0 || i >= MAP_WIDTH || j < 0 || j >= MAP_HEIGHT) {
@@ -199,6 +200,7 @@ void draw_map(WINDOW *window, int screen_width, int screen_height)
 		}
 		++screen_x;
 	}
+	draw_player(window, screen_width, screen_height, cx, cy, offset);
 }
 
 void reset_map(void)
