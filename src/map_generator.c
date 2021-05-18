@@ -128,23 +128,6 @@ void render_camera(int player_x, int player_y, int screen_width, int screen_heig
         int camera_x = player_x - (screen_width / 2);
         int camera_y = player_y - (screen_height / 2);
 
-        if (camera_x > MAP_WIDTH - screen_width - 1)
-		camera_x = MAP_WIDTH - screen_width - 1;
-        if (camera_y > MAP_HEIGHT - screen_height - 1)
-		camera_y = MAP_HEIGHT - screen_height - 1;
-        if (camera_x < 0)
-		camera_x = 0;
-        if (camera_y < 0)
-		camera_y = 0;
-        *cx = camera_x;
-        *cy = camera_y;
-}
-
-void render_camera_test(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy)
-{
-        int camera_x = player_x - (screen_width / 2);
-        int camera_y = player_y - (screen_height / 2);
-
 	if (camera_x >= MAP_WIDTH - screen_width)
 		camera_x = MAP_WIDTH - screen_width;
 	if (camera_y >= MAP_HEIGHT - screen_height)
@@ -162,7 +145,7 @@ void draw_map(WINDOW *window, int screen_width, int screen_height)
 	int player_x, player_y;
 	get_player_xy(&player_x, &player_y);
 	int cx, cy;
-	render_camera_test(player_x, player_y, screen_width, screen_height, &cx, &cy);
+	render_camera(player_x, player_y, screen_width, screen_height, &cx, &cy);
 	bool offset = (cx <= 0 || cy <= 0 || cx + screen_width >= MAP_WIDTH || cy + screen_height >= MAP_HEIGHT); 
 	int screen_x = 0; 
 	for (int i = cx; i < cx + screen_width; i++) {
