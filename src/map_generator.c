@@ -9,10 +9,10 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define MAP_WIDTH 100
-#define MAP_HEIGHT 50
+#define MAP_WIDTH 80 
+#define MAP_HEIGHT 30
 
-#define MAX_ROOMS 10
+#define MAX_ROOMS 30
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 10
 #define ROOM_MIN_HEIGHT 3
@@ -22,8 +22,7 @@
 static bool occupied(int x1, int y1, int x2, int y2);
 static void add_room(int x1, int y1, int x2, int y2, int iter);
 static void place_player(void);
-static void render_camera(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy);
-static void render_camera_test(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy);
+static void render_camera(int screen_width, int screen_height, int *cx, int *cy);
 
 // Local variables
 static int **map;
@@ -123,8 +122,10 @@ void place_player(void)
 	player_move(x, y);
 }
 
-void render_camera(int player_x, int player_y, int screen_width, int screen_height, int *cx, int *cy)
+void render_camera(int screen_width, int screen_height, int *cx, int *cy)
 {
+	int player_x, player_y;
+	get_player_xy(&player_x, &player_y);
         int camera_x = player_x - (screen_width / 2);
         int camera_y = player_y - (screen_height / 2);
 
@@ -142,10 +143,8 @@ void render_camera(int player_x, int player_y, int screen_width, int screen_heig
 
 void draw_map(WINDOW *window, int screen_width, int screen_height)
 {
-	int player_x, player_y;
-	get_player_xy(&player_x, &player_y);
 	int cx, cy;
-	render_camera(player_x, player_y, screen_width, screen_height, &cx, &cy);
+	render_camera(screen_width, screen_height, &cx, &cy);
 	bool offset = (cx <= 0 || cy <= 0 || cx + screen_width >= MAP_WIDTH || cy + screen_height >= MAP_HEIGHT); 
 	int screen_x = 0; 
 	for (int i = cx; i < cx + screen_width; i++) {

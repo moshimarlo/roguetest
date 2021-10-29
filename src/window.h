@@ -8,9 +8,7 @@
 extern WINDOW *debug_win;
 extern WINDOW *game_win;
 
-extern char debug_buffer[40];
-
-void print_to_buffer(char *buffer, char *input);
+extern char debug_buffer[DEBUG_WIN_WIDTH];
 
 void print_buffer(char *buffer, WINDOW *window);
 
