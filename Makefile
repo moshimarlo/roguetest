@@ -15,7 +15,7 @@ BIN := $(BIN_DIR)/demo
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	$(CC) $(LDFLAGS) $^ $(CFLAGS) -o $@ 
+	$(CC) $^ $(CFLAGS) -o $@ $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEP) | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
