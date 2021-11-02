@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define NOCLIP false
+
 // Local functions
 void player_attack(int x, int y);
 void reset_player_pos(void);
@@ -30,7 +32,7 @@ void free_player(void)
 
 int player_handle_input(void)
 {
-	return handle_input(player);
+	return handle_input();
 }
 
 void collision_test(void)
@@ -46,7 +48,7 @@ void collision_test(void)
 		return;
 	}
 	if (is_wall(player->curr_x, player->curr_y)) {
-		//reset_player_pos(player);
+		if (!NOCLIP) reset_player_pos();
 		return;
 	}
 	if (is_monster(player->curr_x, player->curr_y)) {
@@ -61,7 +63,7 @@ void player_attack(int x, int y)
 	Monster *target = get_monster_at(x, y);
 	int hit_roll = 3;
 	target->hp -= hit_roll;
-	char output[20];
+	char output[64];
 	sprintf(output, "%d", target->hp);
 	//print_to_buffer(debug_buffer, output);
 	if (target->hp <= 0) {
@@ -79,7 +81,6 @@ void get_player_xy(int *x, int *y)
 	*x = player->curr_x;
 	*y = player->curr_y;
 }
-
 
 void player_move(int x, int y)
 {

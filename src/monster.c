@@ -11,6 +11,7 @@ static int monster_count;
 
 void load_monsters()
 {
+	monsters = malloc(sizeof(Monster)*MAX_MONSTERS);
 	Monster filler = { .x = 0,
 			.y = 0,
 			.type = NFILLER,
@@ -115,7 +116,7 @@ int set_monster_hp(int type)
 	return hp;
 }
 
-void free_monsters(Monster *monsters)
+void free_monsters()
 {
 	free(monsters);
 }

@@ -2,8 +2,9 @@
 #define MONSTER_H
 
 #include <stdbool.h>
+#include "map_generator.h"
 
-#define MAX_MONSTERS 30
+#define MAX_MONSTERS MAP_WIDTH * MAP_HEIGHT
 #define KOBOLD_HP 10 
 #define ORC_HP 20
 
@@ -31,6 +32,6 @@ char set_symbol(int type);
 void set_name(Monster *monster);
 int set_monster_hp(int type);
 
-void free_monsters(Monster * monsters);
+void free_monsters();
 
 #endif

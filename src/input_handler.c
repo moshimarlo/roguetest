@@ -1,14 +1,15 @@
 #include "input_handler.h"
+#include "game_state.h"
 #include "player.h"
 #include <ncurses.h>
 
-int handle_input(Player* player){
+int handle_input(){
 /*Signal:
      *0 - normal
      *1 - exit
      *2 - randomise test
      * */
-    int signal = 0;
+    int state = AWAIT_INPUT;
     int ch = getch();
 
     switch(ch){
@@ -39,7 +40,7 @@ int handle_input(Player* player){
 		player_move(1, -1);
 		break;
 	case '5'://randomise
-		signal = 2;
+		state = RANDOMIZE;
 		break;
 	case KEY_B2:
 		break;
@@ -54,8 +55,8 @@ int handle_input(Player* player){
 		player_move(1, 1);
 		break;
 	case 'q': 
-		signal = 1;
+		state = QUIT;
 		break;
     } 
-    return signal;
+    return state;
 }

@@ -9,8 +9,6 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define MAP_WIDTH 80
-#define MAP_HEIGHT 30
 
 #define MAX_ROOMS 10
 #define ROOM_MIN_WIDTH 5
@@ -21,10 +19,12 @@
 // Local functions
 static bool occupied(int x1, int y1, int x2, int y2);
 static void add_room(int x1, int y1, int x2, int y2, int iter);
+static void place_monsters(room_t room);
 static void place_player(void);
 static void render_camera(int screen_width, int screen_height, int *cx, int *cy);
 static void tunnel_horiz(int x1, int x2, int y);
 static void tunnel_vert(int y1, int y2, int x);
+static int area(room_t room);
 static int max(int a, int b);
 static int min(int a, int b);
 static pos_t center(room_t room);
@@ -76,6 +76,7 @@ void create_rooms(void)
 		if (tries < 5) {
 			add_room(x1, y1, x2, y2, room_count);
 			pos_t current = center(room_list[room_count]);
+			// If not first room, make tunnel to previous room
 			if (room_count > 0) {
 				pos_t prev = center(room_list[room_count-1]);
 				if (get_rand(1,2) == 1) {
@@ -86,10 +87,28 @@ void create_rooms(void)
 					tunnel_horiz(prev.x, current.x, current.y);
 				}
 			}
+			place_monsters(room_list[room_count]);
 			++room_count;
 		}
         }
 	place_player();
+}
+
+void place_monsters(room_t room)
+{
+	//bool are_monsters = (get_rand(1,2) == 1);
+	bool are_monsters = true;
+	if (are_monsters) {
+		int max_monsters = area(room);
+		int num_monsters = get_rand(1, max_monsters); 
+
+		for (int i = 0; i < num_monsters-1; i++) {
+			int x = get_rand(room.x1, room.x2);
+			int y = get_rand(room.y1, room.y2);
+			add_monster(x, y, NKOBOLD);
+			//map[x][y] = NMONSTER;
+		}
+	}
 }
 
 void add_room(int x1, int y1, int x2, int y2, int iter)
@@ -104,6 +123,11 @@ void add_room(int x1, int y1, int x2, int y2, int iter)
 			map[i][j] = NFLOOR;
 		}
         }
+}
+
+int area(room_t room)
+{
+	return (room.x2-room.x1)*(room.y2-room.y1);
 }
 
 int max(int a, int b)
@@ -154,6 +178,7 @@ room_t *get_room(int x, int y)
 		else
 			return NULL;
 	}
+	return NULL;
 }
 
 bool occupied(int x1, int y1, int x2, int y2)
@@ -164,8 +189,7 @@ bool occupied(int x1, int y1, int x2, int y2)
 			assert(j >= 0);
 			assert(i < MAP_WIDTH);
 			assert(j < MAP_HEIGHT);
-			if (map[i][j] == NFLOOR)
-				return true;
+			if (map[i][j] != NWALL) return true;
                 }
         }
         return false;
@@ -272,8 +296,12 @@ bool is_wall(int x, int y)
 	return map[x][y] == NWALL;
 }
 
+bool is_floor(int x, int y)
+{
+	return map[x][y] == NFLOOR;
+}
+
 bool is_monster(int x, int y)
 {
 	return map[x][y] == NMONSTER;
 }
-

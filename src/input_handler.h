@@ -3,6 +3,6 @@
 
 #include "player.h"
 
-int handle_input(Player* player);
+int handle_input();
 
 #endif

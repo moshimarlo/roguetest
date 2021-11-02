@@ -1,6 +1,7 @@
 #include "pcg_basic.h"
 #include "rng.h"
 #include "symbols.h"
+#include "game_state.h"
 #include "input_handler.h"
 #include "map_generator.h"
 #include "player.h"
@@ -21,12 +22,15 @@ int main(void)
 	// Initialise player values
 	init_player(0, 0, 100);
 
+	// Initialise monsters
+	load_monsters();
+
 	// Initialise map
 	init_map();
 	create_rooms();
 
 	// Input-related variables
-	int input_sig = 0;
+	int game_state = AWAIT_INPUT;
 
 	// Initialise curses
 	initscr();
@@ -44,7 +48,7 @@ int main(void)
 
 
 	// MAIN GAME LOOP
-	while (input_sig != 1) {
+	while (game_state != QUIT) {
 		wclear(game_win);
 		wclear(debug_win);
 
@@ -62,10 +66,10 @@ int main(void)
 
 
 		// Get player input
-		input_sig = 0;
-		input_sig = player_handle_input();
+		game_state = AWAIT_INPUT;
+		game_state = player_handle_input();
 		// 5 pressed - randomise the map
-		if (input_sig == 2) {
+		if (game_state == RANDOMIZE) {
 			reset_map();
 			// TODO: delete all monsters from array and reset count to
 			// zero
@@ -76,6 +80,7 @@ int main(void)
 		collision_test();
 	}
 	free_map();
+	free_monsters();
 	free_player();
 	endwin();
 }

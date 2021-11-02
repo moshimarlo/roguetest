@@ -1,6 +1,6 @@
 # Makefile
 CC=gcc
-CFLAGS=-g -fsanitize=address #-Wall -Wextra #-pedantic
+CFLAGS=-g -fsanitize=address -Wall -Wextra -pedantic
 LDFLAGS=-lncurses -fsanitize=address
 
 SRC_DIR := src
