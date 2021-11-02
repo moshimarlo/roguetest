@@ -9,10 +9,10 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define MAP_WIDTH 80 
+#define MAP_WIDTH 80
 #define MAP_HEIGHT 30
 
-#define MAX_ROOMS 5
+#define MAX_ROOMS 10
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 10
 #define ROOM_MIN_HEIGHT 3
@@ -23,6 +23,11 @@ static bool occupied(int x1, int y1, int x2, int y2);
 static void add_room(int x1, int y1, int x2, int y2, int iter);
 static void place_player(void);
 static void render_camera(int screen_width, int screen_height, int *cx, int *cy);
+static void tunnel_horiz(int x1, int x2, int y);
+static void tunnel_vert(int y1, int y2, int x);
+static int max(int a, int b);
+static int min(int a, int b);
+static pos_t center(room_t room);
 
 // Local variables
 static int **map;
@@ -68,7 +73,21 @@ void create_rooms(void)
 			x2 = x1 + room_width;
 			y2 = y1 + room_height;
                 }
-		if (tries < 5) add_room(x1, y1, x2, y2, room_count++);
+		if (tries < 5) {
+			add_room(x1, y1, x2, y2, room_count);
+			pos_t current = center(room_list[room_count]);
+			if (room_count > 0) {
+				pos_t prev = center(room_list[room_count-1]);
+				if (get_rand(1,2) == 1) {
+					tunnel_horiz(prev.x, current.x, prev.y);
+					tunnel_vert(prev.y, current.y, current.x);
+				} else {
+					tunnel_vert(prev.y, current.y, prev.x);
+					tunnel_horiz(prev.x, current.x, current.y);
+				}
+			}
+			++room_count;
+		}
         }
 	place_player();
 }
@@ -85,6 +104,42 @@ void add_room(int x1, int y1, int x2, int y2, int iter)
 			map[i][j] = NFLOOR;
 		}
         }
+}
+
+int max(int a, int b)
+{
+	if (a > b) return a;
+	return b;
+}
+
+int min(int a, int b)
+{
+	if (a < b) return a;
+	return b;
+}
+
+void tunnel_horiz(int x1, int x2, int y)
+{
+	for (int i = min(x1, x2); i < max(x1, x2); i++) {
+		map[i][y] = NFLOOR;
+	}
+}
+
+void tunnel_vert(int y1, int y2, int x)
+{
+	for (int i = min(y1, y2); i < max(y1, y2); i++) {
+		map[x][i] = NFLOOR;
+	}
+}
+
+pos_t center(room_t room)
+{
+	pos_t result = { .x = 0, .y = 0 };
+	int x = (room.x2-room.x1)/2 + room.x1;
+	int y = (room.y2-room.y1)/2 + room.y1;
+	result.x = x;
+	result.y = y;
+	return result;
 }
 
 room_t *get_room(int x, int y)

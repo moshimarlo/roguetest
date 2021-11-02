@@ -10,6 +10,10 @@ typedef struct room_t {
 	int x1, y1, x2, y2;
 } room_t;
 
+typedef struct pos_t {
+	int x, y;
+} pos_t;
+
 // Memory allocation
 void init_map(void);
 void free_map(void);
