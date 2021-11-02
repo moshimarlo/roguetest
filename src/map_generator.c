@@ -12,7 +12,7 @@
 #define MAP_WIDTH 80 
 #define MAP_HEIGHT 30
 
-#define MAX_ROOMS 10 
+#define MAX_ROOMS 40
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 10
 #define ROOM_MIN_HEIGHT 3
@@ -61,13 +61,14 @@ void create_rooms(void)
                 int x2 = x1 + room_width;
                 int y2 = y1 + room_height;
 
-                while (occupied(x1, y1, x2, y2)) {
+		int tries = 0;
+                while (occupied(x1, y1, x2, y2) && tries++ < 5) {
 			x1 = get_rand(1, MAP_WIDTH - room_width - 1);
 			y1 = get_rand(1, MAP_HEIGHT - room_height - 1);
 			x2 = x1 + room_width;
 			y2 = y1 + room_height;
                 }
-                add_room(x1, y1, x2, y2, room_count);
+		if (tries < 5) add_room(x1, y1, x2, y2, room_count++);
         }
 	place_player();
 }
@@ -187,11 +188,9 @@ void draw_map(WINDOW *window, int screen_width, int screen_height)
 
 void reset_map(void)
 {
-	for (int i = 0; i < MAP_WIDTH; i++) {
-		for (int j = 0; j < MAP_HEIGHT; j++) {
-			map[i][j] = NWALL;
-		}
-	}
+	free_map();
+	init_map();
+	create_rooms();
 }
 
 int get_tile(int x, int y)
