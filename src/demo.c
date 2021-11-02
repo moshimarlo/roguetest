@@ -19,7 +19,7 @@ int main(void)
 	init_rand();
 
 	// Initialise player values
-	init_player(10, 10, 100);
+	init_player(0, 0, 100);
 
 	// Initialise map
 	init_map();

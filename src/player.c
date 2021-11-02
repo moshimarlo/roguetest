@@ -89,6 +89,14 @@ void player_move(int x, int y)
 	player->curr_y += y;
 }
 
+void put_player(int x, int y)
+{
+	player->prev_x = x;
+	player->prev_y = y;
+	player->curr_x = x;
+	player->curr_y = y;
+}
+
 void reset_player_pos(void)
 {
 	player->curr_x = player->prev_x;

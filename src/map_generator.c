@@ -173,9 +173,8 @@ bool occupied(int x1, int y1, int x2, int y2)
 
 void place_player(void)
 {
-	int x = (room_list[0].x1 + room_list[0].x2) / 2;
-	int y = (room_list[0].y1 + room_list[0].y2) / 2;
-	player_move(x, y);
+	pos_t cent = center(room_list[0]);
+	put_player(cent.x, cent.y);
 }
 
 void render_camera(int screen_width, int screen_height, int *cx, int *cy)

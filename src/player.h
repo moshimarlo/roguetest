@@ -18,6 +18,7 @@ void collision_test(void);
 // Movement
 void get_player_xy(int *x, int *y);
 void player_move(int x, int y);
+void put_player(int x, int y);
 
 // Drawing
 void draw_player(WINDOW *win, int screen_width, int screen_height, int cx, int cy, bool offset);
