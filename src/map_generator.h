@@ -1,10 +1,9 @@
-#include "monster.h"
-#include "player.h"
-
-#include <ncurses.h>
-
 #ifndef MAP_GENERATOR_H
 #define MAP_GENERATOR_H
+
+#include "monster.h"
+#include "player.h"
+#include <ncurses.h>
 
 typedef struct room_t {
 	int x1, y1, x2, y2;

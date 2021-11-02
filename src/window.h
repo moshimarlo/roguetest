@@ -1,5 +1,6 @@
 #ifndef WINDOW_H_
 #define WINDOW_H_
+
 #include <ncurses.h>
 
 #define DEBUG_WIN_HEIGHT 5

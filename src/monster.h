@@ -1,9 +1,9 @@
-#include <stdbool.h>
 #ifndef MONSTER_H
 #define MONSTER_H
 
-#define MAX_MONSTERS 30
+#include <stdbool.h>
 
+#define MAX_MONSTERS 30
 #define KOBOLD_HP 10 
 #define ORC_HP 20
 
