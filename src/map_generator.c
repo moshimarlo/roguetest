@@ -12,7 +12,7 @@
 #define MAP_WIDTH 80 
 #define MAP_HEIGHT 30
 
-#define MAX_ROOMS 40
+#define MAX_ROOMS 5
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 10
 #define ROOM_MIN_HEIGHT 3
