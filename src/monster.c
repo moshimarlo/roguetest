@@ -71,9 +71,11 @@ Monster *get_monster_at(int x, int y)
 
 char get_monster_tile(int x, int y)
 {
-	/*Monster monster = get_monster_at(x, y, monsters);*/
-	/*return monster.symbol;*/
-	return (get_monster_at(x,y))->symbol;
+	if (get_monster_at(x,y) != NULL) {
+		return get_monster_at(x,y)->symbol;
+	} else {
+		return FILLER;
+	}
 }
 
 char set_symbol(int type)

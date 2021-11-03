@@ -5,6 +5,8 @@
 typedef struct Player {
 	int curr_x, curr_y, prev_x, prev_y;
 	int hp;
+	int xp;
+	bool confused; 
 } Player;
 
 // Memory allocation

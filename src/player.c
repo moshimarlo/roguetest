@@ -23,6 +23,8 @@ void init_player(int x, int y, int hp)
 	player->curr_x = player->prev_x = x;
 	player->curr_y = player->prev_y = y;
 	player->hp = hp;
+	player->xp = 0;
+	player->confused = false;
 }
 
 void free_player(void)
@@ -86,8 +88,13 @@ void player_move(int x, int y)
 {
 	player->prev_x = player->curr_x;
 	player->prev_y = player->curr_y;
-	player->curr_x += x;
-	player->curr_y += y;
+	if (!player->confused) {
+		player->curr_x += x;
+		player->curr_y += y;
+	} else {
+		player->curr_x += (get_rand(1,3)-2);
+		player->curr_y += (get_rand(1,3)-2);
+	}
 }
 
 void put_player(int x, int y)
