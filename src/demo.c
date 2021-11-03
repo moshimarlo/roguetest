@@ -73,6 +73,8 @@ int main(void)
 			reset_map();
 			// TODO: delete all monsters from array and reset count to
 			// zero
+			free_monsters();
+			load_monsters();
 		}
 
 		/* If player tries to move outside the screen or into a wall, reset
