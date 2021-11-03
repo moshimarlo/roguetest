@@ -46,7 +46,6 @@ int main(void)
 	game_win = newwin(screen_height, screen_width, 0, 0);
 	debug_win = newwin(DEBUG_WIN_HEIGHT, DEBUG_WIN_WIDTH, dbg_y, dbg_x);
 
-
 	// MAIN GAME LOOP
 	while (game_state != QUIT) {
 		werase(game_win);
@@ -55,14 +54,14 @@ int main(void)
 		// Draw map and other window elements
 		draw_map(game_win, screen_width, screen_height);
 
-		int p_x, p_y;
-		char buf[DEBUG_WIN_WIDTH];
-		get_player_xy(&p_x, &p_y);
-		snprintf(buf, DEBUG_WIN_WIDTH, "x: %d\ny: %d", p_x, p_y);
-		mvwaddstr(debug_win,0,0,buf);
-
 		wrefresh(game_win);
 		wrefresh(debug_win);
+
+		/*int p_x, p_y;*/
+		/*char buf[DEBUG_WIN_WIDTH];*/
+		/*get_player_xy(&p_x, &p_y);*/
+		/*snprintf(buf, DEBUG_WIN_WIDTH, "x: %d\ny: %d", p_x, p_y);*/
+		/*mvwaddstr(debug_win,0,0,buf);*/
 
 
 		// Get player input
