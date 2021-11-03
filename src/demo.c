@@ -53,20 +53,16 @@ int main(void)
 
 		// Draw map and other window elements
 		draw_map(game_win, screen_width, screen_height);
+		print_player_xy();
 
+		refresh();
 		wrefresh(game_win);
 		wrefresh(debug_win);
-
-		/*int p_x, p_y;*/
-		/*char buf[DEBUG_WIN_WIDTH];*/
-		/*get_player_xy(&p_x, &p_y);*/
-		/*snprintf(buf, DEBUG_WIN_WIDTH, "x: %d\ny: %d", p_x, p_y);*/
-		/*mvwaddstr(debug_win,0,0,buf);*/
-
 
 		// Get player input
 		game_state = AWAIT_INPUT;
 		game_state = player_handle_input();
+
 		// 5 pressed - randomise the map
 		if (game_state == RANDOMIZE) {
 			reset_map();
@@ -75,7 +71,6 @@ int main(void)
 			free_monsters();
 			load_monsters();
 		}
-
 		/* If player tries to move outside the screen or into a wall, reset
 		 * coordinates to stored value */
 		collision_test();

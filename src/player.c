@@ -98,6 +98,13 @@ void put_player(int x, int y)
 	player->curr_y = y;
 }
 
+void print_player_xy()
+{
+	char buf[DEBUG_WIN_WIDTH];
+	snprintf(buf, DEBUG_WIN_WIDTH, "x: %d\ny: %d", player->curr_x, player->curr_y);
+	mvwaddstr(debug_win,0,0,buf);
+}
+
 void reset_player_pos(void)
 {
 	player->curr_x = player->prev_x;
