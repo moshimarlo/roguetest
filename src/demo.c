@@ -49,8 +49,8 @@ int main(void)
 
 	// MAIN GAME LOOP
 	while (game_state != QUIT) {
-		wclear(game_win);
-		wclear(debug_win);
+		werase(game_win);
+		werase(debug_win);
 
 		// Draw map and other window elements
 		draw_map(game_win, screen_width, screen_height);
