@@ -12,5 +12,6 @@ extern WINDOW *game_win;
 extern char debug_buffer[DEBUG_WIN_WIDTH];
 
 void print_buffer(char *buffer, WINDOW *window);
+void print_to_debug(char *str, int x, int y); 
 
 #endif

@@ -14,9 +14,8 @@ void init_rand(void)
 
 int get_rand(int start, int end)
 {
-	int number;
-	number = ((int)pcg32_boundedrand_r(&rng, end) + start);
-	return number;
+	int distance = end - start;
+	return (int)pcg32_boundedrand_r(&rng, distance+1) + start;
 }
 
 int roll_dice(int num_dice, int num_sides)
