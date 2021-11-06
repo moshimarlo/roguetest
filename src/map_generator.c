@@ -110,7 +110,7 @@ void place_monsters(room_t room)
 			int x = get_rand(room.x1, room.x2);
 			int y = get_rand(room.y1, room.y2);
 			add_monster(x, y, NKOBOLD);
-			//map[x][y] = NMONSTER;
+			map[x][y] = NMONSTER;
 			if (x > MAP_WIDTH || y > MAP_HEIGHT) {
 				sprintf(buffer, "MAJOR FUCKUP DETECTED\n");
 				fprintf(f_ptr, "%s", buffer);

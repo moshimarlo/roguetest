@@ -65,11 +65,11 @@ int main(void)
 
 		// 5 pressed - randomise the map
 		if (game_state == RANDOMIZE) {
+			free_monsters();
+			load_monsters();
 			reset_map();
 			// TODO: delete all monsters from array and reset count to
 			// zero
-			free_monsters();
-			load_monsters();
 		}
 		/* If player tries to move outside the screen or into a wall, reset
 		 * coordinates to stored value */
