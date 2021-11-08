@@ -1,6 +1,7 @@
 #include "monster.h"
 #include "symbols.h"
 #include "window.h"
+#include "map_generator.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -9,7 +10,7 @@
 static Monster *monsters;
 static int monster_count;
 
-void load_monsters()
+void load_monsters(void)
 {
 	monsters = malloc(sizeof(Monster)*MAX_MONSTERS);
 	Monster filler = { .x = 0,
@@ -25,24 +26,14 @@ void load_monsters()
 	}
 }
 
-void init_monster(Monster * monster, int type)
+void check_dead(void)
 {
-	monster->type = type;
-	set_symbol(type);
-	int hp = 0;
-	switch (monster->type) {
-	case NFILLER:
-		hp = 1000;
-		break;
-	case NKOBOLD:
-		hp = 5;
-		break;
-	case NORC:
-		hp = 15;
-		break;
+	for (int i = 0; i < MAX_MONSTERS; i++) {
+		if (monsters[i].hp <= 0) {
+			monsters[i].alive = false;
+			set_tile(monsters[i].x, monsters[i].y, NFLOOR);
+		}
 	}
-	monster->hp = hp;
-	monster->alive = true;
 }
 
 //Called by createRoom() in map_generator.c 

@@ -51,6 +51,8 @@ int main(void)
 		werase(game_win);
 		werase(debug_win);
 
+		check_dead();
+
 		// Draw map and other window elements
 		draw_map(game_win, screen_width, screen_height);
 		print_player_xy();

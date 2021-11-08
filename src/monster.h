@@ -2,7 +2,6 @@
 #define MONSTER_H
 
 #include <stdbool.h>
-#include "map_generator.h"
 
 #define MAX_MONSTERS MAP_WIDTH * MAP_HEIGHT
 #define KOBOLD_HP 10 
@@ -22,8 +21,8 @@ typedef struct MonsterList {
 	Monster *monList[];
 } MonsterList;
 
-void load_monsters();
-void init_monster(Monster * monster, int type);
+void load_monsters(void);
+void check_dead(void);
 void add_monster(int x, int y, int type);
 
 Monster *get_monster_at(int x, int y);

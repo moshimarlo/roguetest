@@ -55,6 +55,8 @@ void collision_test(void)
 	}
 	if (is_monster(player->curr_x, player->curr_y)) {
 		player_attack(player->curr_x, player->curr_y);
+		reset_player_pos();
+		return;
 	}
 	player->prev_x = player->curr_x;
 	player->prev_y = player->curr_y;
@@ -65,17 +67,11 @@ void player_attack(int x, int y)
 	Monster *target = get_monster_at(x, y);
 	int hit_roll = 3;
 	target->hp -= hit_roll;
-	char output[64];
-	sprintf(output, "%d", target->hp);
+	//char output[64];
+	//sprintf(output, "%d", target->hp);
 	//print_to_buffer(debug_buffer, output);
-	if (target->hp <= 0) {
-		set_tile(x, y, NFLOOR);
-		target->alive = false;
-		sprintf(output, "You killed a %s", target->name);
-		//print_to_buffer(debug_buffer, output);
-	} else {
-		reset_player_pos();
-	}
+	//sprintf(output, "You killed a %s", target->name);
+	//print_to_buffer(debug_buffer, output);
 }
 
 void get_player_xy(int *x, int *y)
@@ -88,12 +84,12 @@ void player_move(int x, int y)
 {
 	player->prev_x = player->curr_x;
 	player->prev_y = player->curr_y;
-	if (!player->confused) {
+	if (player->confused) {
+		player->curr_x += (get_rand(-1,1));
+		player->curr_y += (get_rand(-1,1));
+	} else {
 		player->curr_x += x;
 		player->curr_y += y;
-	} else {
-		player->curr_x += (get_rand(1,3)-2);
-		player->curr_y += (get_rand(1,3)-2);
 	}
 }
 
