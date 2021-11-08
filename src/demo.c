@@ -14,6 +14,8 @@
 #include <unistd.h>
 #include <string.h>
 
+static int game_state;
+
 int main(void)
 {
 	// Initialise randomisation
@@ -30,7 +32,7 @@ int main(void)
 	create_rooms();
 
 	// Input-related variables
-	int game_state = AWAIT_INPUT;
+	game_state = AWAIT_INPUT;
 
 	// Initialise curses
 	initscr();
@@ -70,9 +72,13 @@ int main(void)
 			free_monsters();
 			load_monsters();
 			reset_map();
-			// TODO: delete all monsters from array and reset count to
-			// zero
 		}
+		if (game_state == DESCEND && player_on_stairs()) {
+			free_monsters();
+			load_monsters();
+			reset_map();
+		}
+		
 		/* If player tries to move outside the screen or into a wall, reset
 		 * coordinates to stored value */
 		collision_test();

@@ -22,6 +22,7 @@ static bool occupied(int x1, int y1, int x2, int y2);
 static void add_room(int x1, int y1, int x2, int y2, int iter);
 static void place_monsters(room_t room);
 static void place_player(void);
+static void place_stairs(void);
 static void render_camera(int screen_width, int screen_height, int *cx, int *cy);
 static void tunnel_horiz(int x1, int x2, int y);
 static void tunnel_vert(int y1, int y2, int x);
@@ -33,6 +34,7 @@ static pos_t center(room_t room);
 // Local variables
 static int **map;
 static room_t *room_list;
+static int room_count;
 
 // Allocate memory for map and fill with walls 
 void init_map(void)
@@ -58,7 +60,7 @@ void free_map(void)
 
 void create_rooms(void)
 {
-        int room_count = 0;
+        room_count = 0;
         for (int i = 0; i < MAX_ROOMS; i++) {
                 int room_width = get_rand(ROOM_MIN_WIDTH, ROOM_MAX_WIDTH);
                 int room_height = get_rand(ROOM_MIN_HEIGHT, ROOM_MAX_HEIGHT);
@@ -93,14 +95,15 @@ void create_rooms(void)
 		}
         }
 	place_player();
+	place_stairs();
 }
 
 void place_monsters(room_t room)
 {
 	FILE *f_ptr = fopen("monslog", "a");
 	char buffer[64];
-	//bool are_monsters = (get_rand(1,2) == 1);
-	bool are_monsters = true;
+	//bool are_monsters = (get_rand(1,3) == 1);
+	bool are_monsters = false;
 	if (are_monsters) {
 		int max_monsters = area(room);
 		//int num_monsters = get_rand(1, max_monsters); 
@@ -227,6 +230,15 @@ void place_player(void)
 	put_player(cent.x, cent.y);
 }
 
+void place_stairs(void)
+{
+	int room_num = get_rand(0, room_count-1);
+	room_t stairs_room = room_list[room_num];
+	int x = get_rand(stairs_room.x1, stairs_room.x2);
+	int y = get_rand(stairs_room.y1, stairs_room.y2);
+	set_tile(x, y, NSTAIRCASE);
+}
+
 void render_camera(int screen_width, int screen_height, int *cx, int *cy)
 {
 	int player_x, player_y;
@@ -325,6 +337,11 @@ bool is_wall(int x, int y)
 bool is_floor(int x, int y)
 {
 	return map[x][y] == NFLOOR;
+}
+
+bool is_staircase(int x, int y)
+{
+	return map[x][y] == NSTAIRCASE;
 }
 
 bool is_monster(int x, int y)

@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <ncurses.h>
+
 typedef struct Player {
 	int curr_x, curr_y, prev_x, prev_y;
 	int hp;

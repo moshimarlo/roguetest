@@ -4,6 +4,7 @@
 enum state {
 	AWAIT_INPUT,
 	RANDOMIZE,
+	DESCEND,
 	QUIT,
 };
 

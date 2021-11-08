@@ -54,6 +54,11 @@ int handle_input(){
 	case KEY_NPAGE:
 		player_move(1, 1);
 		break;
+	//climb down stairs
+	case '>':
+		state = DESCEND;
+		break;
+	//quit game
 	case 'q': 
 		state = QUIT;
 		break;

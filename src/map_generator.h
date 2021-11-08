@@ -35,6 +35,7 @@ int get_map_width(void);
 int get_map_height(void);
 bool is_wall(int x, int y);
 bool is_floor(int x, int y);
+bool is_staircase(int x, int y);
 bool is_monster(int x, int y);
 
 #endif
