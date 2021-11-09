@@ -14,10 +14,67 @@
 #include <unistd.h>
 #include <string.h>
 
-static int game_state;
+//static int game_state;
+
+void init_curses(int *width, int *height)
+{
+	initscr();
+	noecho();
+	curs_set(FALSE);
+	keypad(stdscr, TRUE);
+	getmaxyx(stdscr, *height, *width);
+}
+
+void quit_too_small()
+{
+	print_to_debug("Window too small!", 0, 0);
+	print_to_debug("Please increase size to at least 80x30", 0, 1);
+	refresh();
+	wrefresh(debug_win);
+	int a = getch();
+	endwin();
+}
+
+void process_new_state(int state)
+{
+	switch (state) {
+	case RANDOMIZE:
+		free_monsters();
+		load_monsters();
+		reset_map();
+		break;
+	case DESCEND:
+		if (player_on_stairs()) {
+			free_monsters();
+			load_monsters();
+			reset_map();
+		}
+		break;
+	}
+}
 
 int main(void)
 {
+	// Initialise curses
+	int screen_width, screen_height;
+	init_curses(&screen_width, &screen_height);
+
+	// Initialise windows
+	int dbg_y = screen_height - DEBUG_WIN_HEIGHT;
+	int dbg_x = screen_width - DEBUG_WIN_WIDTH;
+	int viewport_width = screen_width-DEBUG_WIN_WIDTH;
+	int viewport_height = screen_height;
+	game_win = newwin(viewport_height, viewport_width, 0, 0);
+	debug_win = newwin(DEBUG_WIN_HEIGHT, DEBUG_WIN_WIDTH, dbg_y, dbg_x);
+
+	int game_state;
+	bool window_too_small = (screen_width < 80 || screen_height < 30);
+
+	if (window_too_small) {
+		//game_state = QUIT;
+		quit_too_small();
+	}
+
 	// Initialise randomisation
 	init_rand();
 
@@ -31,23 +88,6 @@ int main(void)
 	init_map();
 	create_rooms();
 
-	// Input-related variables
-	game_state = AWAIT_INPUT;
-
-	// Initialise curses
-	initscr();
-	noecho();
-	curs_set(FALSE);
-	keypad(stdscr, TRUE);
-	int screen_width, screen_height;
-	getmaxyx(stdscr, screen_height, screen_width);
-
-	// Initialise windows
-	int dbg_y = screen_height - DEBUG_WIN_HEIGHT;
-	int dbg_x = screen_width - DEBUG_WIN_WIDTH;
-	game_win = newwin(screen_height, screen_width, 0, 0);
-	debug_win = newwin(DEBUG_WIN_HEIGHT, DEBUG_WIN_WIDTH, dbg_y, dbg_x);
-
 	// MAIN GAME LOOP
 	while (game_state != QUIT) {
 		werase(game_win);
@@ -56,7 +96,7 @@ int main(void)
 		check_dead();
 
 		// Draw map and other window elements
-		draw_map(game_win, screen_width, screen_height);
+		draw_map(game_win, viewport_width, viewport_height);
 		print_player_xy();
 
 		refresh();
@@ -67,17 +107,9 @@ int main(void)
 		game_state = AWAIT_INPUT;
 		game_state = player_handle_input();
 
-		// 5 pressed - randomise the map
-		if (game_state == RANDOMIZE) {
-			free_monsters();
-			load_monsters();
-			reset_map();
-		}
-		if (game_state == DESCEND && player_on_stairs()) {
-			free_monsters();
-			load_monsters();
-			reset_map();
-		}
+		// If input causes a change in state, e.g. player has descended
+		// stairs to a new level, perform relevant functions 
+		process_new_state(game_state);
 		
 		/* If player tries to move outside the screen or into a wall, reset
 		 * coordinates to stored value */
