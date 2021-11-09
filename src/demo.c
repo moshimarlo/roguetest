@@ -62,14 +62,17 @@ int main(void)
 	int dbg_x = screen_width - DEBUG_WIN_WIDTH;
 	int viewport_width = screen_width-DEBUG_WIN_WIDTH;
 	int viewport_height = screen_height;
-	game_win = newwin(viewport_height, viewport_width, 0, 0);
-	debug_win = newwin(DEBUG_WIN_HEIGHT, DEBUG_WIN_WIDTH, dbg_y, dbg_x);
+	int status_y = 0;
+	int status_x = viewport_width+1;
+	viewport_win = newwin(viewport_height, viewport_width, 0, 0);
+	status_win = newwin(screen_height, screen_width-status_x, status_y, status_x);
+	//debug_win = newwin(DEBUG_WIN_HEIGHT, DEBUG_WIN_WIDTH, dbg_y, dbg_x);
 
 	int game_state;
 	bool window_too_small = (screen_width < 80 || screen_height < 30);
 
 	if (window_too_small) {
-		//game_state = QUIT;
+		game_state = QUIT;
 		quit_too_small();
 	}
 
@@ -88,18 +91,22 @@ int main(void)
 
 	// MAIN GAME LOOP
 	while (game_state != QUIT) {
-		werase(game_win);
-		werase(debug_win);
+		werase(viewport_win);
+		werase(status_win);
+		//werase(debug_win);
 
 		check_dead();
 
 		// Draw map and other window elements
-		draw_map(game_win, viewport_width, viewport_height);
-		print_player_xy();
+		draw_map(viewport_win, viewport_width, viewport_height);
+		//print_player_xy();
+		wborder(status_win, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, 0, 0, 0, 0);
+		print_status();
 
 		refresh();
-		wrefresh(game_win);
-		wrefresh(debug_win);
+		wrefresh(viewport_win);
+		wrefresh(status_win);
+		//wrefresh(debug_win);
 
 		// Get player input
 		game_state = AWAIT_INPUT;

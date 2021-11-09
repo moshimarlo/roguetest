@@ -81,6 +81,16 @@ void get_player_xy(int *x, int *y)
 	*y = player->curr_y;
 }
 
+int get_player_hp(void)
+{
+	return player->hp;
+}
+
+int get_player_xp(void)
+{
+	return player->xp;
+}
+
 void player_move(int x, int y)
 {
 	player->prev_x = player->curr_x;
