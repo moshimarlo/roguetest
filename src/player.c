@@ -25,6 +25,7 @@ void init_player(int x, int y, int hp)
 	player->curr_y = player->prev_y = y;
 	player->hp = hp;
 	player->xp = 0;
+	player->gold = 0;
 	player->confused = false;
 }
 
@@ -91,6 +92,11 @@ int get_player_xp(void)
 	return player->xp;
 }
 
+int get_player_gold(void)
+{
+	return player->gold;
+}
+
 void player_move(int x, int y)
 {
 	player->prev_x = player->curr_x;
@@ -102,6 +108,11 @@ void player_move(int x, int y)
 		player->curr_x += x;
 		player->curr_y += y;
 	}
+}
+
+void player_inc_xp(int xp)
+{
+	player->xp += xp;
 }
 
 void put_player(int x, int y)

@@ -23,6 +23,9 @@ enum monsterType {
 #define DOOR '+'
 #define STAIRCASE '>'
 
+//OBJECT SYMBOLS
+#define GOLD '$'
+
 //MAP TILE INTS
 enum tile {
 	NBOUNDS,

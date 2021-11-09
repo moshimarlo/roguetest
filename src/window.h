@@ -5,7 +5,6 @@
 
 #define DEBUG_WIN_HEIGHT 5
 #define DEBUG_WIN_WIDTH 30
-#define STATUS_WIN_HEIGHT 30
 #define STATUS_WIN_WIDTH 20
 
 extern WINDOW *debug_win;

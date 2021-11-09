@@ -29,9 +29,19 @@ void load_monsters(void)
 void check_dead(void)
 {
 	for (int i = 0; i < MAX_MONSTERS; i++) {
-		if (monsters[i].hp <= 0) {
+		if (monsters[i].hp <= 0 && monsters[i].alive == true) {
 			monsters[i].alive = false;
 			set_tile(monsters[i].x, monsters[i].y, NFLOOR);
+			int xp_gain = 0;
+			switch (monsters[i].type) {
+			case NKOBOLD:
+				xp_gain = KOBOLD_XP;
+				break;
+			case NORC:
+				xp_gain = ORC_XP;
+				break;
+			}
+			player_inc_xp(xp_gain);
 		}
 	}
 }

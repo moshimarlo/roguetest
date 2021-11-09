@@ -4,8 +4,14 @@
 #include <stdbool.h>
 
 #define MAX_MONSTERS MAP_WIDTH * MAP_HEIGHT
+
+// Default HP values for monsters
 #define KOBOLD_HP 10 
 #define ORC_HP 20
+
+// Default XP gain from killing monsters
+#define KOBOLD_XP 5 
+#define ORC_XP 10 
 
 typedef struct Monster {
 	int x, y;

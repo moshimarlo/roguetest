@@ -19,12 +19,13 @@ void print_status(void)
 {
 	int hp = get_player_hp();
 	int xp = get_player_xp();
-	snprintf(status_buffer, STATUS_WIN_WIDTH, "HP: %d", hp);
-	mvwprintw(status_win, 1, 1, "%s", status_buffer);
-	snprintf(status_buffer, STATUS_WIN_WIDTH, "XP: %d", xp);
+	int gold = get_player_gold();
+	snprintf(status_buffer, STATUS_WIN_WIDTH, "  HP: %4d", hp);
+	mvwprintw(status_win, 1, 1, status_buffer);
+	snprintf(status_buffer, STATUS_WIN_WIDTH, "  XP: %4d", xp);
 	mvwprintw(status_win, 2, 1, status_buffer);
+	snprintf(status_buffer, STATUS_WIN_WIDTH, "Gold: %4d", gold);
 	mvwprintw(status_win, 3, 1, status_buffer);
-	mvwprintw(status_win, 4, 1, status_buffer);
 }
 
 void print_to_debug(char *str, int x, int y) {

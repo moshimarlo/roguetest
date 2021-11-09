@@ -58,14 +58,16 @@ int main(void)
 	init_curses(&screen_width, &screen_height);
 
 	// Initialise windows
-	int dbg_y = screen_height - DEBUG_WIN_HEIGHT;
-	int dbg_x = screen_width - DEBUG_WIN_WIDTH;
-	int viewport_width = screen_width-DEBUG_WIN_WIDTH;
 	int viewport_height = screen_height;
+	int viewport_width = screen_width-STATUS_WIN_WIDTH;
+	int viewport_y = 0;
+	int viewport_x = 0;
+	int status_height = screen_height;
+	int status_width = STATUS_WIN_WIDTH;
 	int status_y = 0;
-	int status_x = viewport_width+1;
-	viewport_win = newwin(viewport_height, viewport_width, 0, 0);
-	status_win = newwin(screen_height, screen_width-status_x, status_y, status_x);
+	int status_x = screen_width-STATUS_WIN_WIDTH;
+	viewport_win = newwin(viewport_height, viewport_width, viewport_y, viewport_x);
+	status_win = newwin(status_height, status_width, status_y, status_x);
 	//debug_win = newwin(DEBUG_WIN_HEIGHT, DEBUG_WIN_WIDTH, dbg_y, dbg_x);
 
 	int game_state;
@@ -100,7 +102,7 @@ int main(void)
 		// Draw map and other window elements
 		draw_map(viewport_win, viewport_width, viewport_height);
 		//print_player_xy();
-		wborder(status_win, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE, 0, 0, 0, 0);
+		box(status_win, ACS_VLINE, ACS_HLINE);
 		print_status();
 
 		refresh();
