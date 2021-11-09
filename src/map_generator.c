@@ -100,13 +100,9 @@ void create_rooms(void)
 
 void place_monsters(room_t room)
 {
-	FILE *f_ptr = fopen("monslog", "a");
-	char buffer[64];
-	//bool are_monsters = (get_rand(1,3) == 1);
-	bool are_monsters = false;
+	bool are_monsters = (get_rand(1,100) <= 50);
 	if (are_monsters) {
-		int max_monsters = area(room);
-		//int num_monsters = get_rand(1, max_monsters); 
+		int max_monsters = area(room)/4;
 		int num_monsters = get_rand(1, max_monsters);
 
 		for (int i = 0; i < num_monsters-1; i++) {
@@ -114,30 +110,8 @@ void place_monsters(room_t room)
 			int y = get_rand(room.y1, room.y2);
 			add_monster(x, y, NKOBOLD);
 			map[x][y] = NMONSTER;
-			if (x > MAP_WIDTH || y > MAP_HEIGHT) {
-				sprintf(buffer, "MAJOR FUCKUP DETECTED\n");
-				fprintf(f_ptr, "%s", buffer);
-				sprintf(buffer, "x: %d\n", x);
-				fprintf(f_ptr, "%s", buffer);
-				sprintf(buffer, "y: %d\n", y);
-				fprintf(f_ptr, "%s", buffer);
-				sprintf(buffer, "room.x1: %d\n", room.x1);
-				fprintf(f_ptr, "%s", buffer);
-				sprintf(buffer, "room.x2: %d\n", room.x2);
-				fprintf(f_ptr, "%s", buffer);
-				sprintf(buffer, "room.y1: %d\n", room.y1);
-				fprintf(f_ptr, "%s", buffer);
-				sprintf(buffer, "room.y2: %d\n", room.y2);
-				fprintf(f_ptr, "%s", buffer);
-			} else {
-				sprintf(buffer, "x: %d\n", x);
-				fprintf(f_ptr, "%s", buffer);
-				sprintf(buffer, "y: %d\n", y);
-				fprintf(f_ptr, "%s", buffer);
-			}
 		}
 	}
-	fclose(f_ptr);
 }
 
 void add_room(int x1, int y1, int x2, int y2, int iter)

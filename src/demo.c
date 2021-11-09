@@ -14,8 +14,6 @@
 #include <unistd.h>
 #include <string.h>
 
-//static int game_state;
-
 void init_curses(int *width, int *height)
 {
 	initscr();
@@ -31,7 +29,7 @@ void quit_too_small()
 	print_to_debug("Please increase size to at least 80x30", 0, 1);
 	refresh();
 	wrefresh(debug_win);
-	int a = getch();
+	getch();
 	endwin();
 }
 
