@@ -11,7 +11,7 @@
 #include <assert.h>
 
 
-#define MAX_ROOMS 10
+#define MAX_ROOMS 30
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 10
 #define ROOM_MIN_HEIGHT 3
@@ -135,14 +135,12 @@ int area(room_t room)
 
 int max(int a, int b)
 {
-	if (a > b) return a;
-	return b;
+	return (a >= b) ? a : b;
 }
 
 int min(int a, int b)
 {
-	if (a < b) return a;
-	return b;
+	return (a <= b) ? a : b;
 }
 
 void tunnel_horiz(int x1, int x2, int y)
