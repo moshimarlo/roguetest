@@ -30,6 +30,8 @@ typedef struct MonsterList {
 void load_monsters(void);
 void check_dead(void);
 void add_monster(int x, int y, int type);
+void move_monsters(void);
+void draw_monsters(void);
 
 Monster *get_monster_at(int x, int y);
 char get_monster_tile(int x, int y);

@@ -98,6 +98,8 @@ int main(void)
 		//werase(debug_win);
 
 		check_dead();
+		move_monsters();
+		draw_monsters();
 
 		// Draw map and other window elements
 		draw_map(viewport_win, viewport_width, viewport_height);
@@ -113,6 +115,7 @@ int main(void)
 		// Get player input
 		game_state = AWAIT_INPUT;
 		game_state = player_handle_input();
+
 
 		// If input causes a change in state, e.g. player has descended
 		// stairs to a new level, perform relevant functions 

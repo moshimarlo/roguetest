@@ -14,7 +14,7 @@ static bool goal_reached(node_t current, node_t goal);
 static bool in_open_set(heap_t* heap, node_t node);
 static void reconstruct_path(node_t goal, point_t start, node_t* map, path_t* path, int max_x);
 
-static void check_full(path_t* path)
+static void check_full(path_t* path);
 
 // Debugging
 static void print_path(path_t *path, int max_x, int max_y);
@@ -73,7 +73,7 @@ void free_path(path_t* path)
 
 static void check_full(path_t* path)
 {
-	if (path->len > path->max) {
+	if (path->len >= path->max) {
 		path->max *= 2;
 		path->points = realloc(path->points, sizeof(point_t)*path->max);
 	}
@@ -184,19 +184,4 @@ path_t* astar(point_t start_coords, point_t goal_coords, int max_x, int max_y)
 	free(map);
 	free_heap(open_set);
 	return path;
-}
-
-int main(void)
-{
-	int max_x = 10;
-	int max_y = 10;
-	point_t start = { .x = 0, .y = 0 };
-	point_t end = { .x = 9, .y = 9 };
-
-	path_t *path = astar(start, end, max_x, max_y);
-	print_path(path, max_x, max_y);
-	print_path_size(path);
-
-	free_path(path);
-	return 0;
 }

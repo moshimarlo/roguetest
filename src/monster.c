@@ -1,4 +1,5 @@
 #include "monster.h"
+#include "astar.h"
 #include "symbols.h"
 #include "window.h"
 #include "map_generator.h"
@@ -42,6 +43,36 @@ void check_dead(void)
 				break;
 			}
 			player_inc_xp(xp_gain);
+		}
+	}
+}
+
+void draw_monsters(void)
+{
+	for (int i = 0; i < monster_count; i++) {
+		if (monsters[i].alive) {
+			set_tile(monsters[i].x, monsters[i].y, NMONSTER);
+		}
+	}
+}
+
+void move_monsters(void)
+{
+	int map_width = get_map_width();
+	int map_height = get_map_height();
+	for (int i = 0; i < MAX_MONSTERS; i++) {
+		if (monsters[i].hp >= 0 && monsters[i].alive == true) {
+			int player_x, player_y;
+			get_player_xy(&player_x, &player_y);
+			point_t start = { .x = monsters[i].x, .y = monsters[i].y };
+			point_t end = { .x = player_x, .y = player_y };
+			path_t *path = astar(start, end, map_width, map_height);
+			monsters[i].x = path->points[path->len].x;
+			monsters[i].y = path->points[path->len].y;
+			//set_tile(monsters[i].x, monsters[i].y, NMONSTER);
+			//monsters[i].x += 1;
+			//monsters[i].y += 1;
+			free_path(path);
 		}
 	}
 }

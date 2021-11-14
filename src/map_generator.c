@@ -11,7 +11,7 @@
 #include <assert.h>
 
 
-#define MAX_ROOMS 30
+#define MAX_ROOMS 2
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 10
 #define ROOM_MIN_HEIGHT 3
@@ -109,7 +109,7 @@ void place_monsters(room_t room)
 			int x = get_rand(room.x1, room.x2);
 			int y = get_rand(room.y1, room.y2);
 			add_monster(x, y, NKOBOLD);
-			map[x][y] = NMONSTER;
+			//map[x][y] = NMONSTER;
 		}
 	}
 }

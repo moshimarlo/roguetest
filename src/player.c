@@ -12,8 +12,8 @@
 #define NOCLIP false
 
 // Local functions
-void player_attack(int x, int y);
-void reset_player_pos(void);
+static void player_attack(int x, int y);
+static void reset_player_pos(void);
 
 // Local variables
 static Player *player;
@@ -64,7 +64,7 @@ void collision_test(void)
 	player->prev_y = player->curr_y;
 }
 
-void player_attack(int x, int y)
+static void player_attack(int x, int y)
 {
 	Monster *target = get_monster_at(x, y);
 	int hit_roll = 3;
@@ -130,7 +130,7 @@ void print_player_xy()
 	mvwaddstr(debug_win,0,0,buf);
 }
 
-void reset_player_pos(void)
+static void reset_player_pos(void)
 {
 	player->curr_x = player->prev_x;
 	player->curr_y = player->prev_y;
