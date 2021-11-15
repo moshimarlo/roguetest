@@ -68,7 +68,7 @@ static void player_attack(int x, int y)
 {
 	Monster *target = get_monster_at(x, y);
 	int hit_roll = 3;
-	target->hp -= hit_roll;
+	decrease_monster_hp(target, hit_roll);
 	//char output[64];
 	//sprintf(output, "%d", target->hp);
 	//print_to_buffer(debug_buffer, output);

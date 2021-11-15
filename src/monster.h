@@ -38,6 +38,7 @@ char get_monster_tile(int x, int y);
 char set_symbol(int type);
 void set_name(Monster *monster);
 int set_monster_hp(int type);
+void decrease_monster_hp(Monster* monster, int value);
 
 void free_monsters();
 

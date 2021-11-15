@@ -150,6 +150,11 @@ int set_monster_hp(int type)
 	return hp;
 }
 
+void decrease_monster_hp(Monster* monster, int value)
+{
+	if (monster) monster->hp -= value;
+}
+
 void free_monsters()
 {
 	free(monsters);
