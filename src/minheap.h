@@ -6,7 +6,8 @@
 
 typedef struct Node {
 	int x, y, from_x, from_y;
-	double f, g, h;
+	bool passable;
+	double f, g;
 } node_t;
 
 typedef struct Heap {

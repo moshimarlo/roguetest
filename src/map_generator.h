@@ -5,7 +5,7 @@
 #include "player.h"
 #include <ncurses.h>
 
-#define MAP_WIDTH 20
+#define MAP_WIDTH 40
 #define MAP_HEIGHT 20
 
 typedef struct room_t {
@@ -37,5 +37,6 @@ bool is_wall(int x, int y);
 bool is_floor(int x, int y);
 bool is_staircase(int x, int y);
 bool is_monster(int x, int y);
+bool out_of_bounds(int x, int y);
 
 #endif

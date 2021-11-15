@@ -16,7 +16,7 @@
 #define MIN(a, b) (a <= b) ? a : b
 #define MAX(a, b) (a >= b) ? a : b 
 
-node_t error_node = { .x = -1, .y = -1, .f = 0, .g = 0, .h = 0 };
+node_t error_node = { .x = -1, .y = -1, .f = 0, .g = 0 };
 
 // Internal check to see if heap has reached its size limit and
 // double capacity if so

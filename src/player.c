@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 
 #define NOCLIP false
 
@@ -147,4 +148,12 @@ void draw_player(WINDOW *win, int screen_width, int screen_height, int cx, int c
 bool player_on_stairs(void)
 {
 	return (get_tile(player->curr_x, player->curr_y) == NSTAIRCASE);
+}
+
+bool adjacent_to_player(int x, int y)
+{
+	int x_distance = abs(player->curr_x - x);
+	int y_distance = abs(player->curr_y - y);
+	if (x_distance <= 1 && y_distance <= 1) return true;
+	return false;
 }

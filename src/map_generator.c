@@ -11,7 +11,7 @@
 #include <assert.h>
 
 
-#define MAX_ROOMS 2
+#define MAX_ROOMS 5
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 10
 #define ROOM_MIN_HEIGHT 3
@@ -239,7 +239,7 @@ void draw_map(WINDOW *window, int screen_width, int screen_height)
 	for (int i = cx; i < cx + screen_width; i++) {
 		int screen_y = 0;
 		for (int j = cy; j < cy + screen_height; j++) {
-			char tile = '?';
+			char tile = 'P';
 			int tile_value;
 			if (i < 0 || i >= MAP_WIDTH || j < 0 || j >= MAP_HEIGHT) {
 				tile_value = NBOUNDS;
@@ -319,4 +319,10 @@ bool is_staircase(int x, int y)
 bool is_monster(int x, int y)
 {
 	return map[x][y] == NMONSTER;
+}
+
+bool out_of_bounds(int x, int y)
+{
+	if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT) return true;
+	return false;
 }

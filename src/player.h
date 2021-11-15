@@ -25,6 +25,7 @@ void player_move(int x, int y);
 void put_player(int x, int y);
 void print_player_xy();
 bool player_on_stairs(void);
+bool adjacent_to_player(int x, int y);
 
 // Stats
 int get_player_hp(void);

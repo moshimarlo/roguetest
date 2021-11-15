@@ -2,11 +2,13 @@
 #include "astar.h"
 #include "symbols.h"
 #include "window.h"
+#include "player.h"
 #include "map_generator.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 static Monster *monsters;
 static int monster_count;
@@ -20,7 +22,7 @@ void load_monsters(void)
 			.symbol = FILLER,
 			.name = "Filler",
 			.hp = 1000,
-			.alive = true };
+			.alive = false };
 	monster_count = 0;
 	for (int i = 0; i < MAX_MONSTERS; i++) {
 		monsters[i] = filler;
@@ -29,7 +31,7 @@ void load_monsters(void)
 
 void check_dead(void)
 {
-	for (int i = 0; i < MAX_MONSTERS; i++) {
+	for (int i = 0; i < monster_count; i++) {
 		if (monsters[i].hp <= 0 && monsters[i].alive == true) {
 			monsters[i].alive = false;
 			set_tile(monsters[i].x, monsters[i].y, NFLOOR);
@@ -50,7 +52,10 @@ void check_dead(void)
 void draw_monsters(void)
 {
 	for (int i = 0; i < monster_count; i++) {
-		if (monsters[i].alive) {
+		int x = monsters[i].x;
+		int y = monsters[i].y;
+		assert(!out_of_bounds(x, y));
+		if (monsters[i].alive && !out_of_bounds(x, y)) {
 			set_tile(monsters[i].x, monsters[i].y, NMONSTER);
 		}
 	}
@@ -60,19 +65,30 @@ void move_monsters(void)
 {
 	int map_width = get_map_width();
 	int map_height = get_map_height();
-	for (int i = 0; i < MAX_MONSTERS; i++) {
-		if (monsters[i].hp >= 0 && monsters[i].alive == true) {
+	for (int i = 0; i < monster_count; i++) {
+		if (monsters[i].alive == true && !adjacent_to_player(monsters[i].x, monsters[i].y)) {
 			int player_x, player_y;
 			get_player_xy(&player_x, &player_y);
 			point_t start = { .x = monsters[i].x, .y = monsters[i].y };
 			point_t end = { .x = player_x, .y = player_y };
 			path_t *path = astar(start, end, map_width, map_height);
-			monsters[i].x = path->points[path->len].x;
-			monsters[i].y = path->points[path->len].y;
-			//set_tile(monsters[i].x, monsters[i].y, NMONSTER);
-			//monsters[i].x += 1;
-			//monsters[i].y += 1;
-			free_path(path);
+			// If astar does not return NULL
+			if (path) {
+				int path_x = path->points[path->len].x;
+				int path_y = path->points[path->len].y;
+				assert(!out_of_bounds(path_x, path_y));
+				if (out_of_bounds(monsters[i].x, monsters[i].y)) {
+					free_path(path);
+					continue;
+				}
+				if (is_floor(path_x, path_y)) {
+					set_tile(monsters[i].x, monsters[i].y, NFLOOR);
+					monsters[i].x = path_x;
+					monsters[i].y = path_y;
+				}
+				//set_tile(monsters[i].x, monsters[i].y, NMONSTER);
+				free_path(path);
+			}
 		}
 	}
 }

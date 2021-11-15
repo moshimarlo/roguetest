@@ -2,3 +2,4 @@
 *~
 demo
 valgrind*
+gmon.out
