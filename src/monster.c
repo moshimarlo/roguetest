@@ -16,8 +16,8 @@ static int monster_count;
 void load_monsters(void)
 {
 	monsters = malloc(sizeof(Monster)*MAX_MONSTERS);
-	Monster filler = { .x = 0,
-			.y = 0,
+	Monster filler = { .x = -1,
+			.y = -1,
 			.type = NFILLER,
 			.symbol = FILLER,
 			.name = "Filler",
@@ -72,8 +72,8 @@ void move_monsters(void)
 			point_t start = { .x = monsters[i].x, .y = monsters[i].y };
 			point_t end = { .x = player_x, .y = player_y };
 			path_t *path = astar(start, end, map_width, map_height);
-			// If astar does not return NULL
-			if (path) {
+			// If astar does not find a suitable path
+			if (path != NULL) {
 				int path_x = path->points[path->len].x;
 				int path_y = path->points[path->len].y;
 				assert(!out_of_bounds(path_x, path_y));
@@ -86,7 +86,6 @@ void move_monsters(void)
 					monsters[i].x = path_x;
 					monsters[i].y = path_y;
 				}
-				//set_tile(monsters[i].x, monsters[i].y, NMONSTER);
 				free_path(path);
 			}
 		}
@@ -119,11 +118,8 @@ Monster *get_monster_at(int x, int y)
 
 char get_monster_tile(int x, int y)
 {
-	if (get_monster_at(x,y) != NULL) {
-		return get_monster_at(x,y)->symbol;
-	} else {
-		return FILLER;
-	}
+	if (get_monster_at(x,y)) return get_monster_at(x,y)->symbol;
+	return FILLER;
 }
 
 char set_symbol(int type)

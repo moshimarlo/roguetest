@@ -26,29 +26,32 @@ void init_curses(int *width, int *height)
 void quit_too_small()
 {
 	print_to_debug("Window too small!", 0, 0);
-	print_to_debug("Please increase size to at least 80x30", 0, 1);
+	print_to_debug("Increase size to at least 80x30", 0, 1);
 	refresh();
 	wrefresh(debug_win);
 	getch();
 	endwin();
 }
 
-void process_new_state(int state)
+bool new_level(int state)
 {
+	FILE *fd = fopen("aslog", "a");
 	switch (state) {
 	case RANDOMIZE:
-		free_monsters();
-		load_monsters();
-		reset_map();
-		break;
+		fprintf(fd, "#######################################\n");
+		fprintf(fd, "#######################################\n");
+		fclose(fd);
+		return true;
 	case DESCEND:
 		if (player_on_stairs()) {
-			free_monsters();
-			load_monsters();
-			reset_map();
+			fprintf(fd, "#######################################\n");
+			fprintf(fd, "#######################################\n");
+			fclose(fd);
+			return true;
 		}
 		break;
 	}
+	return false;
 }
 
 int main(void)
@@ -98,11 +101,10 @@ int main(void)
 		//werase(debug_win);
 
 		check_dead();
-		move_monsters();
-		draw_monsters();
 
 		// Draw map and other window elements
 		draw_map(viewport_win, viewport_width, viewport_height);
+		draw_monsters();
 		//print_player_xy();
 		box(status_win, ACS_VLINE, ACS_HLINE);
 		print_status();
@@ -119,11 +121,15 @@ int main(void)
 
 		// If input causes a change in state, e.g. player has descended
 		// stairs to a new level, perform relevant functions 
-		process_new_state(game_state);
+		if (new_level(game_state)) {
+			reset_map();
+			continue;
+		}
 		
 		/* If player tries to move outside the screen or into a wall, reset
 		 * coordinates to stored value */
 		collision_test();
+		move_monsters();
 	}
 	free_map();
 	free_monsters();

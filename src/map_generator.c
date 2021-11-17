@@ -13,7 +13,7 @@
 
 #define MAX_ROOMS 5
 #define ROOM_MIN_WIDTH 5
-#define ROOM_MAX_WIDTH 10
+#define ROOM_MAX_WIDTH 7 
 #define ROOM_MIN_HEIGHT 3
 #define ROOM_MAX_HEIGHT 5
 
@@ -108,8 +108,7 @@ void place_monsters(room_t room)
 		for (int i = 0; i < num_monsters-1; i++) {
 			int x = get_rand(room.x1, room.x2);
 			int y = get_rand(room.y1, room.y2);
-			add_monster(x, y, NKOBOLD);
-			//map[x][y] = NMONSTER;
+			if (is_floor(x, y)) add_monster(x, y, NKOBOLD);
 		}
 	}
 }
@@ -276,6 +275,8 @@ void draw_map(WINDOW *window, int screen_width, int screen_height)
 
 void reset_map(void)
 {
+	free_monsters();
+	load_monsters();
 	free_map();
 	init_map();
 	create_rooms();

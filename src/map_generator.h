@@ -5,8 +5,8 @@
 #include "player.h"
 #include <ncurses.h>
 
-#define MAP_WIDTH 40
-#define MAP_HEIGHT 20
+#define MAP_WIDTH 30
+#define MAP_HEIGHT 10
 
 typedef struct room_t {
 	int x1, y1, x2, y2;

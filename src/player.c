@@ -68,7 +68,7 @@ void collision_test(void)
 static void player_attack(int x, int y)
 {
 	Monster *target = get_monster_at(x, y);
-	int hit_roll = 3;
+	int hit_roll = roll_dice(3,6) + 2;
 	decrease_monster_hp(target, hit_roll);
 	//char output[64];
 	//sprintf(output, "%d", target->hp);
@@ -154,6 +154,5 @@ bool adjacent_to_player(int x, int y)
 {
 	int x_distance = abs(player->curr_x - x);
 	int y_distance = abs(player->curr_y - y);
-	if (x_distance <= 1 && y_distance <= 1) return true;
-	return false;
+	return (x_distance <= 1 && y_distance <= 1);
 }

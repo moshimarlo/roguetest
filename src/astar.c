@@ -62,13 +62,17 @@ path_t* init_path()
 
 static void reconstruct_path(point_t start, node_t goal, node_t** map, path_t* path)
 {
+	FILE *fp = fopen("aslog", "a");
 	node_t current = goal;
 	path->len = 0;
 	path->max = PATH_INITIAL_MAX;
 	path->points[path->len].x = current.x;
 	path->points[path->len].y = current.y;
+	fprintf(fp, "------------------------------------------------------\n");
+	fprintf(fp, "START: (%2d, %2d)\n", start.x, start.y);
+	fprintf(fp, "GOAL: (%2d, %2d)\n", goal.x, goal.y);
 	while (current.x != start.x && current.y != start.y) {
-		path->len++;
+		++path->len;
 		check_full(path);
 		assert(current.from_x >= 0 && current.from_x < get_map_width());
 		assert(current.from_y >= 0 && current.from_y < get_map_height());
@@ -76,9 +80,12 @@ static void reconstruct_path(point_t start, node_t goal, node_t** map, path_t* p
 		int y_distance = abs(current.y - current.from_y);
 		assert(x_distance <= 1 && y_distance <= 1);
 		current = map[current.from_x][current.from_y];
+		//assert(!get_monster_at(current.x, current.y));
 		path->points[path->len].x = current.x;
 		path->points[path->len].y = current.y;
+		fprintf(fp, "#%2d: (%2d, %2d)\n", (int)path->len, current.x, current.y);
 	}
+	fclose(fp);
 }
 
 static double d_value(int i, int j)
@@ -140,15 +147,11 @@ path_t* astar(point_t start_coords, point_t goal_coords, int max_x, int max_y)
 				// Check if on current node
 				if (i == 0 && j == 0) continue;
 				// Check if neighbour out of bounds
-				/*if (current.x == 0 && i == -1) continue;
-				if (current.y == 0 && j == -1) continue;
-				if (current.x == max_x-1 && i == 1) continue;
-				if (current.y == max_y-1 && j == 1) continue;*/
 				if (out_of_bounds(current.x+i, current.y+j)) continue;
 				if (!map[current.x+i][current.y+j].passable) continue;
 				node_t neighbour = map[current.x+i][current.y+j];
 				double tentative_gscore = current.g + d_value(i, j);
-				if (tentative_gscore < neighbour.g) {
+				if (tentative_gscore < neighbour.g && neighbour.passable) {
 					// This path to neighbour is better than previous
 					map[current.x+i][current.y+j].from_x = current.x;
 					map[current.x+i][current.y+j].from_y = current.y;
@@ -163,6 +166,7 @@ path_t* astar(point_t start_coords, point_t goal_coords, int max_x, int max_y)
 			}
 		}	
 	}
+	// Suitable path not found
 	for (int i = 0; i < max_x; i++) free(map[i]);
 	free(map);
 	free_heap(open_set);
