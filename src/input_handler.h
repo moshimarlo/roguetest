@@ -1,5 +1,5 @@
-#ifndef INPUT_HANDLER_H
-#define INPUT_HANDLER_H
+#ifndef __INPUT_HANDLER_H_
+#define __INPUT_HANDLER_H_
 
 #include "player.h"
 

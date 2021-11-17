@@ -1,5 +1,5 @@
-#ifndef GAME_STATE_H
-#define GAME_STATE_H
+#ifndef __GAME_STATE_H_
+#define __GAME_STATE_H_
 
 enum state {
 	AWAIT_INPUT,

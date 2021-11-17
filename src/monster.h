@@ -1,5 +1,5 @@
-#ifndef MONSTER_H
-#define MONSTER_H
+#ifndef __MONSTER_H_
+#define __MONSTER_H_
 
 #include <stdbool.h>
 

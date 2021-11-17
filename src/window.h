@@ -1,5 +1,5 @@
-#ifndef WINDOW_H_
-#define WINDOW_H_
+#ifndef __WINDOW_H_
+#define __WINDOW_H_
 
 #include <ncurses.h>
 

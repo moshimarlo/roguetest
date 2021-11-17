@@ -1,3 +1,6 @@
+#ifndef __SYMBOLS_H_
+#define __SYMBOLS_H_
+
 //CHARACTER SYMBOLS
 #define PLAYER_SYMBOL '@'
 #define KOBOLD 'K'	
@@ -35,3 +38,5 @@ enum tile {
 	NSTAIRCASE,
 	NMONSTER
 };
+
+#endif

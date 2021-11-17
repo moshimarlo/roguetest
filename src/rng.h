@@ -1,5 +1,5 @@
-#ifndef RNG_H
-#define RNG_H
+#ifndef __RNG_H_
+#define __RNG_H_
 
 void init_rand(void);
 int get_rand(int start, int end);

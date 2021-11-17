@@ -1,5 +1,5 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef __PLAYER_H_
+#define __PLAYER_H_
 
 #include <ncurses.h>
 

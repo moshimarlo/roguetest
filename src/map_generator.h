@@ -1,12 +1,10 @@
-#ifndef MAP_GENERATOR_H
-#define MAP_GENERATOR_H
+#ifndef __MAP_GENERATOR_H_
+#define __MAP_GENERATOR_H_
 
-#include "monster.h"
-#include "player.h"
 #include <ncurses.h>
 
-#define MAP_WIDTH 30
-#define MAP_HEIGHT 10
+#define MAP_WIDTH 40
+#define MAP_HEIGHT 20
 
 typedef struct room_t {
 	int x1, y1, x2, y2;

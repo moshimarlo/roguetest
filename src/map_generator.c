@@ -3,6 +3,8 @@
 #include "symbols.h"
 #include "window.h"
 #include "pcg_basic.h"
+#include "monster.h"
+#include "player.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -10,8 +12,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-
-#define MAX_ROOMS 5
+#define MAX_ROOMS 50
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 7 
 #define ROOM_MIN_HEIGHT 3
