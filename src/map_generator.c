@@ -5,6 +5,7 @@
 #include "pcg_basic.h"
 #include "monster.h"
 #include "player.h"
+#include "minheap.h" // MAX() and MIN()
 
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +13,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define MAX_ROOMS 50
+#define MAX_ROOMS 1
 #define ROOM_MIN_WIDTH 5
 #define ROOM_MAX_WIDTH 7 
 #define ROOM_MIN_HEIGHT 3
@@ -101,12 +102,14 @@ void create_rooms(void)
 
 void place_monsters(room_t room)
 {
-	bool are_monsters = (get_rand(1,100) <= 50);
+	// bool are_monsters = (get_rand(1,100) <= 50);
+	bool are_monsters = true;
 	if (are_monsters) {
-		int max_monsters = area(room)/4;
+		// int max_monsters = area(room)/4;
+		int max_monsters = MIN(area(room)/4, MAX_MONSTERS - get_monster_count());
 		int num_monsters = get_rand(1, max_monsters);
 
-		for (int i = 0; i < num_monsters-1; i++) {
+		for (int i = 0; i < num_monsters; ++i) {
 			int x = get_rand(room.x1, room.x2);
 			int y = get_rand(room.y1, room.y2);
 			if (is_floor(x, y)) add_monster(x, y, NKOBOLD);

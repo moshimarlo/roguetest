@@ -15,7 +15,7 @@ static int monster_count;
 
 void load_monsters(void)
 {
-	monsters = malloc(sizeof(Monster)*MAX_MONSTERS);
+	monsters = malloc(sizeof(*monsters)*MAX_MONSTERS + 1);
 	Monster filler = { .x = -1,
 			.y = -1,
 			.type = NFILLER,
@@ -140,10 +140,10 @@ void set_name(Monster *monster)
 {
 	switch (monster->type) {
 	case NKOBOLD:
-		strcpy(monster->name, SKOBOLD);
+		strncpy(monster->name, SKOBOLD, MAX_NAME_LEN);
 		break;
 	case NORC:
-		strcpy(monster->name, SORC);
+		strncpy(monster->name, SORC, MAX_NAME_LEN);
 		break;
 	}
 }
@@ -165,6 +165,11 @@ int set_monster_hp(int type)
 void decrease_monster_hp(Monster* monster, int value)
 {
 	if (monster) monster->hp -= value;
+}
+
+int get_monster_count(void)
+{
+	return monster_count;
 }
 
 void free_monsters()

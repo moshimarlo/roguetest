@@ -1,4 +1,5 @@
 #include "astar.h"
+#include "minheap.h"
 #include "rng.h"
 #include "map_generator.h"
 

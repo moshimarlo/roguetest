@@ -73,7 +73,7 @@ int main(void)
 	status_win = newwin(status_height, status_width, status_y, status_x);
 	//debug_win = newwin(DEBUG_WIN_HEIGHT, DEBUG_WIN_WIDTH, dbg_y, dbg_x);
 
-	int game_state;
+	int game_state = AWAIT_INPUT;
 	bool window_too_small = (screen_width < 80 || screen_height < 30);
 
 	if (window_too_small) {

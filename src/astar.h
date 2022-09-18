@@ -2,7 +2,6 @@
 #define __ASTAR_H_
 
 #include <stdlib.h>
-#include "minheap.h"
 
 #define PATH_INITIAL_MAX 32
 

@@ -13,9 +13,6 @@
 // Same as above, but parent is i/2.
 #define PARENT(i) (i >> 1)
 
-#define MIN(a, b) (a <= b) ? a : b
-#define MAX(a, b) (a >= b) ? a : b 
-
 node_t error_node = { .x = -1, .y = -1, .f = 0, .g = 0 };
 
 // Internal check to see if heap has reached its size limit and

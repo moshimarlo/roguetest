@@ -3,7 +3,8 @@
 
 #include <stdbool.h>
 
-#define MAX_MONSTERS MAP_WIDTH * MAP_HEIGHT
+#define MAX_MONSTERS 1
+#define MAX_NAME_LEN 24
 
 // Default HP values for monsters
 #define KOBOLD_HP 10 
@@ -17,7 +18,7 @@ typedef struct Monster {
 	int x, y;
 	int type;
 	char symbol;
-	char name[20];
+	char name[MAX_NAME_LEN];
 	int hp;
 	bool alive;
 } Monster;
@@ -39,6 +40,7 @@ char set_symbol(int type);
 void set_name(Monster *monster);
 int set_monster_hp(int type);
 void decrease_monster_hp(Monster* monster, int value);
+int get_monster_count(void);
 
 void free_monsters();
 

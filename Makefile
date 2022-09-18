@@ -1,7 +1,7 @@
 # Makefile
 CC=gcc
-CFLAGS=-g -pg -fsanitize=address -Wall -Wextra -pedantic
-LDFLAGS=-lncurses -pg -fsanitize=address
+CFLAGS=-g -pg -Wall -Wextra -pedantic
+LDFLAGS=-lncurses -pg
 
 SRC_DIR := src
 OBJ_DIR := obj
