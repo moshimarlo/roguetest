@@ -14,6 +14,8 @@
 #include <unistd.h>
 #include <string.h>
 
+#define GRAPHICAL 1
+
 void init_curses(int *width, int *height)
 {
 	initscr();
@@ -35,18 +37,18 @@ void quit_too_small()
 
 bool new_level(int state)
 {
-	FILE *fd = fopen("aslog", "a");
+	// FILE *fd = fopen("aslog", "a");
 	switch (state) {
 	case RANDOMIZE:
-		fprintf(fd, "#######################################\n");
-		fprintf(fd, "#######################################\n");
-		fclose(fd);
+		// fprintf(fd, "#######################################\n");
+		// fprintf(fd, "#######################################\n");
+		// fclose(fd);
 		return true;
 	case DESCEND:
 		if (player_on_stairs()) {
-			fprintf(fd, "#######################################\n");
-			fprintf(fd, "#######################################\n");
-			fclose(fd);
+			// fprintf(fd, "#######################################\n");
+			// fprintf(fd, "#######################################\n");
+			// fclose(fd);
 			return true;
 		}
 		break;
@@ -56,6 +58,8 @@ bool new_level(int state)
 
 int main(void)
 {
+	int game_state = AWAIT_INPUT;
+#if GRAPHICAL
 	// Initialise curses
 	int screen_width, screen_height;
 	init_curses(&screen_width, &screen_height);
@@ -73,13 +77,13 @@ int main(void)
 	status_win = newwin(status_height, status_width, status_y, status_x);
 	//debug_win = newwin(DEBUG_WIN_HEIGHT, DEBUG_WIN_WIDTH, dbg_y, dbg_x);
 
-	int game_state = AWAIT_INPUT;
 	bool window_too_small = (screen_width < 80 || screen_height < 30);
 
 	if (window_too_small) {
 		game_state = QUIT;
 		quit_too_small();
 	}
+#endif // GRAPHICAL
 
 	// Initialise randomisation
 	init_rand();
@@ -96,23 +100,24 @@ int main(void)
 
 	// MAIN GAME LOOP
 	while (game_state != QUIT) {
+#if GRAPHICAL
 		werase(viewport_win);
 		werase(status_win);
-		//werase(debug_win);
+#endif // GRAPHICAL
 
 		check_dead();
 
+#if GRAPHICAL
 		// Draw map and other window elements
 		draw_map(viewport_win, viewport_width, viewport_height);
 		draw_monsters();
-		//print_player_xy();
 		box(status_win, ACS_VLINE, ACS_HLINE);
 		print_status();
 
 		refresh();
 		wrefresh(viewport_win);
 		wrefresh(status_win);
-		//wrefresh(debug_win);
+#endif // GRAPHICAL
 
 		// Get player input
 		game_state = AWAIT_INPUT;

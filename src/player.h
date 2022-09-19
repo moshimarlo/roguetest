@@ -9,7 +9,7 @@ typedef struct Player {
 	int xp;
 	int gold;
 	bool confused; 
-} Player;
+} player_t;
 
 // Memory allocation
 void init_player(int x, int y, int hp);

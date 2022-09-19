@@ -17,11 +17,11 @@ static void player_attack(int x, int y);
 static void reset_player_pos(void);
 
 // Local variables
-static Player *player;
+static player_t *player;
 
 void init_player(int x, int y, int hp)
 {
-	player = malloc(sizeof(Player));
+	player = malloc(sizeof(player));
 	player->curr_x = player->prev_x = x;
 	player->curr_y = player->prev_y = y;
 	player->hp = hp;

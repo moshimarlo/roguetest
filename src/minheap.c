@@ -57,11 +57,11 @@ void heap_push(heap_t *heap, node_t val)
 	}
 }
 
-node_t heap_pop(heap_t *heap)
+node_t* heap_pop(heap_t *heap)
 {
 	int cur = 1;
-	node_t ret = heap->array[cur];
-	if (heap->n < 1) return error_node;
+	node_t* ret = &heap->array[cur];
+	if (heap->n < 1) return NULL;
 	heap->array[1] = heap->array[heap->n--];
 	unsigned int left = LEFT_CHILD(cur);
 	unsigned int right = RIGHT_CHILD(cur);
@@ -83,10 +83,10 @@ node_t heap_pop(heap_t *heap)
 	return ret;
 }
 
-node_t heap_peek(heap_t *heap)
+node_t* heap_peek(heap_t *heap)
 {
-	if (heap->n >= 1) return heap->array[1];
-	return error_node;
+	if (heap->n >= 1) return &heap->array[1];
+	return NULL;
 	//return (heap->n >= 1) ? *(heap->array[1]) : error_node;
 }
 

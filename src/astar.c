@@ -14,9 +14,9 @@
 
 static double d_value(int i, int j);
 static double heuristic(node_t node, node_t goal);
-static bool goal_reached(node_t current, node_t goal);
+static bool goal_reached(node_t* current, node_t goal);
 static bool in_open_set(heap_t* heap, node_t node);
-static void reconstruct_path(point_t start, node_t goal, node_t** map, path_t* path);
+static void reconstruct_path(point_t start, node_t* goal, node_t** map, path_t* path);
 
 static void check_full(path_t* path);
 
@@ -28,9 +28,9 @@ static double heuristic(node_t node, node_t goal)
 	return dx + dy + (sqrt(2) - 2) * MIN(dx, dy);
 }
 
-static bool goal_reached(node_t current, node_t goal)
+static bool goal_reached(node_t* current, node_t goal)
 {
-	return (current.x == goal.x && current.y == goal.y);
+	return (current->x == goal.x && current->y == goal.y);
 }
 
 static bool in_open_set(heap_t* heap, node_t node)
@@ -61,17 +61,17 @@ path_t* init_path()
 	return path;
 }
 
-static void reconstruct_path(point_t start, node_t goal, node_t** map, path_t* path)
+static void reconstruct_path(point_t start, node_t* goal, node_t** map, path_t* path)
 {
 	FILE *fp = fopen("aslog", "a");
-	node_t current = goal;
+	node_t current = *goal;
 	path->len = 0;
 	path->max = PATH_INITIAL_MAX;
 	path->points[path->len].x = current.x;
 	path->points[path->len].y = current.y;
 	fprintf(fp, "------------------------------------------------------\n");
 	fprintf(fp, "START: (%2d, %2d)\n", start.x, start.y);
-	fprintf(fp, "GOAL: (%2d, %2d)\n", goal.x, goal.y);
+	fprintf(fp, "GOAL: (%2d, %2d)\n", goal->x, goal->y);
 	while (current.x != start.x && current.y != start.y) {
 		++path->len;
 		check_full(path);
@@ -129,7 +129,7 @@ path_t* astar(point_t start_coords, point_t goal_coords, int max_x, int max_y)
 	heap_t *open_set = init_heap();
 	heap_push(open_set, start);
 	while (!heap_empty(open_set)) {
-		node_t current = heap_peek(open_set);
+		node_t *current = heap_peek(open_set);
 
 		if (goal_reached(current, goal)) {
 			reconstruct_path(start_coords, current, map, path);
@@ -148,18 +148,18 @@ path_t* astar(point_t start_coords, point_t goal_coords, int max_x, int max_y)
 				// Check if on current node
 				if (i == 0 && j == 0) continue;
 				// Check if neighbour out of bounds
-				if (out_of_bounds(current.x+i, current.y+j)) continue;
-				if (!map[current.x+i][current.y+j].passable) continue;
-				node_t neighbour = map[current.x+i][current.y+j];
-				double tentative_gscore = current.g + d_value(i, j);
+				if (out_of_bounds(current->x+i, current->y+j)) continue;
+				if (!map[current->x+i][current->y+j].passable) continue;
+				node_t neighbour = map[current->x+i][current->y+j];
+				double tentative_gscore = current->g + d_value(i, j);
 				if (tentative_gscore < neighbour.g && neighbour.passable) {
 					// This path to neighbour is better than previous
-					map[current.x+i][current.y+j].from_x = current.x;
-					map[current.x+i][current.y+j].from_y = current.y;
-					map[current.x+i][current.y+j].g = tentative_gscore;
-					map[current.x+i][current.y+j].f = tentative_gscore
+					map[current->x+i][current->y+j].from_x = current->x;
+					map[current->x+i][current->y+j].from_y = current->y;
+					map[current->x+i][current->y+j].g = tentative_gscore;
+					map[current->x+i][current->y+j].f = tentative_gscore
 								+ heuristic(neighbour, goal);
-					neighbour = map[current.x+i][current.y+j];
+					neighbour = map[current->x+i][current->y+j];
 					if (!in_open_set(open_set, neighbour)) {
 						heap_push(open_set, neighbour);
 					}

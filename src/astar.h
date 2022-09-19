@@ -18,4 +18,4 @@ typedef struct Path {
 path_t* astar(point_t start_coords, point_t goal_coords, int max_x, int max_y);
 void free_path(path_t* path);
 
-#endif
+#endif // __ASTAR_H_

@@ -28,8 +28,8 @@ void free_heap(heap_t *heap);
 
 // Heap functions
 void heap_push(heap_t* heap, node_t val);
-node_t heap_pop(heap_t* heap);
-node_t heap_peek(heap_t* heap);
+node_t* heap_pop(heap_t* heap);
+node_t* heap_peek(heap_t* heap);
 
 // Debugging
 size_t heap_len(heap_t* heap);
@@ -37,4 +37,4 @@ bool heap_empty(heap_t* heap);
 bool in_heap(heap_t* heap, node_t node);
 void print_heap(heap_t *heap);
 
-#endif
+#endif // __MINHEAP_H_
