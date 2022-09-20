@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #define DEBUG_LOGGER 1
 
@@ -36,6 +37,7 @@ static int free_log(logfile_t* p)
     return RET_OK;
 }
 
+// Go through the linked list and return a pointer to logfile with name matching parameter
 static int find_logfile(const char* filename, logfile_t** out)
 {
     for (logfile_t *p = lf_HEAD; p != NULL; p = p->next) {
@@ -66,15 +68,21 @@ int write_to_logfile(const char* filename, const char* string, ...)
 	lf->fp = fopen(lf->name, "a");
     if (lf->fp == NULL) {
 #if DEBUG_LOGGER
-        fprintf(stderr, "Logger: fopen failed\n");
+        fprintf(stderr, "Logger: fopen failed (%s)\n", strerror(errno));
 #endif
         return RET_NOK;
     }
 	fprintf(lf->fp, "%s", buf);
-    fclose(lf->fp);
+    if (fclose(lf->fp) != 0) {
+#if DEBUG_LOGGER
+        fprintf(stderr, "Logger: fclose failed (%s)\n", strerror(errno));
+#endif
+        return RET_NOK;
+    }
     return RET_OK;
 }
 
+// Register a logfile in the linked list, and create the file on the filesystem.
 int add_logfile(const char* filename)
 {
     logfile_t *p = lf_HEAD;
@@ -82,12 +90,23 @@ int add_logfile(const char* filename)
     p->next = malloc(sizeof(*p->next));
     if (p->next == NULL) {
 #if DEBUG_LOGGER
-        fprintf(stderr, "Logger: couldn't allocate memory for new logfile\n");
+        fprintf(stderr, "Logger: couldn't allocate memory for new logfile (%s)\n", strerror(errno));
 #endif
         return RET_NOK;
     }
     strncpy(p->next->name, filename, NAME_MAX);
 	p->next->fp = fopen(p->next->name, "a");
-    fclose(p->next->fp);
+    if (p->next->fp == NULL) {
+#if DEBUG_LOGGER
+        fprintf(stderr, "Logger: fopen failed (%s)\n", strerror(errno));
+#endif
+        return RET_NOK;
+    }
+    if (fclose(p->next->fp) != 0) {
+#if DEBUG_LOGGER
+        fprintf(stderr, "Logger: fclose failed (%s)\n", strerror(errno));
+#endif
+        return RET_NOK;
+    }
     return RET_OK;
 }
