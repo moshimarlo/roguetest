@@ -1,14 +1,14 @@
 #ifndef __LOGGER_H_
 #define __LOGGER_H_
 
-#include <stdio.h>
+#include <stdio.h>  // for FILE and print functions
 #include <stdarg.h> // for varargs in write_to_logfile
 #include <limits.h> // for NAME_MAX (maximum filename length)
 
 #define ENABLE_LOGGING 1
 
 #if ENABLE_LOGGING
-#define ASTAR_LOG "aslog"
+#define ASTAR_LOG "astar.log"
 #endif // ENABLE_LOGGING
 
 typedef struct logFile {

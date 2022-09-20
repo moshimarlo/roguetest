@@ -2,5 +2,5 @@
 *~
 demo
 valgrind*
-gmon.out
-aslog
+*log
+.vscode/

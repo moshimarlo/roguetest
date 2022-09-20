@@ -27,7 +27,7 @@ $(OBJ_DIR):
 clean:
 	rm $(OBJ_DIR)/*.o
 	rm -f $(BIN_DIR)/$(BIN)
-	rm -f log*
+	rm -f *log
 
 .PHONY: val
 val:
@@ -35,5 +35,5 @@ val:
          --show-leak-kinds=all \
          --track-origins=yes \
          --verbose \
-         --log-file=log.txt \
+         --log-file=valgrind.log \
          ./$(BIN)
