@@ -7,6 +7,7 @@
 #include "player.h"
 #include "monster.h"
 #include "window.h"
+#include "logger.h"
 
 #include <ncurses.h>
 
@@ -37,18 +38,19 @@ void quit_too_small()
 
 bool new_level(int state)
 {
-	// FILE *fd = fopen("aslog", "a");
 	switch (state) {
 	case RANDOMIZE:
-		// fprintf(fd, "#######################################\n");
-		// fprintf(fd, "#######################################\n");
-		// fclose(fd);
+#if ENABLE_LOGGING
+		write_to_logfile(ASTAR_LOG, "#######################################\n");
+		write_to_logfile(ASTAR_LOG, "#######################################\n");
+#endif
 		return true;
 	case DESCEND:
 		if (player_on_stairs()) {
-			// fprintf(fd, "#######################################\n");
-			// fprintf(fd, "#######################################\n");
-			// fclose(fd);
+#if ENABLE_LOGGING
+		write_to_logfile(ASTAR_LOG, "#######################################\n");
+		write_to_logfile(ASTAR_LOG, "#######################################\n");
+#endif
 			return true;
 		}
 		break;
@@ -58,6 +60,10 @@ bool new_level(int state)
 
 int main(void)
 {
+#if ENABLE_LOGGING
+	init_logging();
+	add_logfile(ASTAR_LOG);
+#endif
 	int game_state = AWAIT_INPUT;
 #if GRAPHICAL
 	// Initialise curses
@@ -139,5 +145,8 @@ int main(void)
 	free_map();
 	free_monsters();
 	free_player();
+#if ENABLE_LOGGING
+	free_logs();
+#endif
 	endwin();
 }

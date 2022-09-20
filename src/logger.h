@@ -2,12 +2,19 @@
 #define __LOGGER_H_
 
 #include <stdio.h>
+#include <stdarg.h> // for varargs in write_to_logfile
 #include <limits.h> // for NAME_MAX (maximum filename length)
+
+#define ENABLE_LOGGING 1
+
+#if ENABLE_LOGGING
+#define ASTAR_LOG "aslog"
+#endif // ENABLE_LOGGING
 
 typedef struct logFile {
     char name[NAME_MAX];
     FILE *fp;
-    logfile_t *next;
+    struct logFile *next;
 } logfile_t;
 
 enum {
@@ -17,7 +24,8 @@ enum {
 };
 
 int init_logging(void);
+int free_logs(void);
 int add_logfile(const char* filename);
-int write_to_logfile(const char* filename, const char* string);
+int write_to_logfile(const char* filename, const char* string, ...);
 
 #endif // __LOGGER_H_

@@ -2,6 +2,7 @@
 #include "minheap.h"
 #include "rng.h"
 #include "map_generator.h"
+#include "logger.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -11,6 +12,7 @@
 #include <assert.h>
 
 #define MIN(a, b) (a <= b) ? a : b
+#define ENABLE_LOGGING 1
 
 static double d_value(int i, int j);
 static double heuristic(node_t node, node_t goal);
@@ -63,15 +65,16 @@ path_t* init_path()
 
 static void reconstruct_path(point_t start, node_t* goal, node_t** map, path_t* path)
 {
-	FILE *fp = fopen("aslog", "a");
 	node_t current = *goal;
 	path->len = 0;
 	path->max = PATH_INITIAL_MAX;
 	path->points[path->len].x = current.x;
 	path->points[path->len].y = current.y;
-	fprintf(fp, "------------------------------------------------------\n");
-	fprintf(fp, "START: (%2d, %2d)\n", start.x, start.y);
-	fprintf(fp, "GOAL: (%2d, %2d)\n", goal->x, goal->y);
+#if ENABLE_LOGGING
+	write_to_logfile(ASTAR_LOG, "------------------------------------------------------\n");
+	write_to_logfile(ASTAR_LOG, "START: (%2d, %2d)\n", start.x, start.y);
+	write_to_logfile(ASTAR_LOG, "GOAL: (%2d, %2d)\n", goal->x, goal->y);
+#endif
 	while (current.x != start.x && current.y != start.y) {
 		++path->len;
 		check_full(path);
@@ -84,9 +87,8 @@ static void reconstruct_path(point_t start, node_t* goal, node_t** map, path_t* 
 		//assert(!get_monster_at(current.x, current.y));
 		path->points[path->len].x = current.x;
 		path->points[path->len].y = current.y;
-		fprintf(fp, "#%2d: (%2d, %2d)\n", (int)path->len, current.x, current.y);
+		write_to_logfile(ASTAR_LOG, "#%2d: (%2d, %2d)\n", (int)path->len, current.x, current.y);
 	}
-	fclose(fp);
 }
 
 static double d_value(int i, int j)
