@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define DEBUG_LOGGER
+#define DEBUG_LOGGER 1
 
 #define MAX_STRLEN 256
 
@@ -14,7 +14,7 @@ static int free_log(logfile_t* p);
 
 int init_logging(void)
 {
-    lf_HEAD = malloc(sizeof(lf_HEAD));
+    lf_HEAD = malloc(sizeof(*lf_HEAD));
     if (lf_HEAD == NULL) return RET_NOK;
     lf_HEAD->fp = NULL;
     lf_HEAD->next = NULL;
@@ -38,7 +38,7 @@ static int free_log(logfile_t* p)
 
 static int find_logfile(const char* filename, logfile_t** out)
 {
-    for (logfile_t *p = lf_HEAD; p->next != NULL; p = p->next) {
+    for (logfile_t *p = lf_HEAD; p != NULL; p = p->next) {
         if (strncmp(filename, p->name, NAME_MAX) == 0) {
             *out = p;
             return RET_OK;
@@ -57,17 +57,16 @@ int write_to_logfile(const char* filename, const char* string, ...)
     vsnprintf(buf, sizeof(buf), string, vl);
     va_end(vl);
 
-    int sig = find_logfile(filename, &lf);
-    if (sig == RET_FNF) {
-#ifdef DEBUG_LOGGER
-        printf("Logger: file not found\n");
+    if (find_logfile(filename, &lf) == RET_FNF) {
+#if DEBUG_LOGGER
+        fprintf(stderr, "Logger: file not found (%s)\n", filename);
 #endif
         return RET_FNF;
     }
 	lf->fp = fopen(lf->name, "a");
     if (lf->fp == NULL) {
-#ifdef DEBUG_LOGGER
-        printf("Logger: fopen failed\n");
+#if DEBUG_LOGGER
+        fprintf(stderr, "Logger: fopen failed\n");
 #endif
         return RET_NOK;
     }
@@ -78,10 +77,17 @@ int write_to_logfile(const char* filename, const char* string, ...)
 
 int add_logfile(const char* filename)
 {
-    logfile_t *p;
-    for (p = lf_HEAD; p->next != NULL; p = p->next) {}
-    p->next = malloc(sizeof(p));
-    if (p->next == NULL) return RET_NOK;
+    logfile_t *p = lf_HEAD;
+    while (p->next != NULL) p = p->next;
+    p->next = malloc(sizeof(*p->next));
+    if (p->next == NULL) {
+#if DEBUG_LOGGER
+        fprintf(stderr, "Logger: couldn't allocate memory for new logfile\n");
+#endif
+        return RET_NOK;
+    }
     strncpy(p->next->name, filename, NAME_MAX);
+	p->next->fp = fopen(p->next->name, "a");
+    fclose(p->next->fp);
     return RET_OK;
 }
